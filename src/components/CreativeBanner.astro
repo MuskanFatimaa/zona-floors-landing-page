@@ -1,0 +1,51 @@
+---
+/**
+ * CreativeBanner — drops a client-branded promo creative into the page as a
+ * clickable, conversion-focused block. The creative already carries a
+ * "GET FREE QUOTE" CTA baked in; the whole card links to the lead form, with a
+ * flashy electric-lime frame + CTA button for extra pop (Floor Daddy energy).
+ *
+ * Creatives are square (1080x1080; c5 ~1080x1082) and self-hosted under
+ * /public/creatives for reliable, fast loading.
+ */
+interface Props {
+  src: string;
+  alt: string;
+  /** Scroll/jump target — defaults to the on-page lead form. */
+  href?: string;
+  /** Intrinsic pixel size (square), used to reserve space (no CLS). */
+  size?: number;
+  /** Section background utility classes. */
+  bg?: string;
+}
+const { src, alt, href = "#lead-form", size = 1080, bg = "bg-brand-dark" } = Astro.props;
+---
+
+<section class={bg}>
+  <div data-reveal class="mx-auto max-w-lg px-5 py-12 sm:py-16">
+    <a
+      href={href}
+      class="group relative block overflow-hidden rounded-3xl shadow-2xl ring-4 ring-pop transition-transform duration-300 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-8 focus-visible:ring-pop/70"
+    >
+      <img
+        src={src}
+        alt={alt}
+        width={size}
+        height={size}
+        loading="lazy"
+        decoding="async"
+        class="block w-full"
+      />
+      <!-- subtle inner edge so the creative reads as a framed card -->
+      <span class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></span>
+    </a>
+
+    <a
+      href={href}
+      class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-pop px-6 py-4 text-center text-lg font-extrabold uppercase tracking-wide text-brand-dark shadow-lg transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 sm:text-xl"
+    >
+      Get My Free Estimate
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

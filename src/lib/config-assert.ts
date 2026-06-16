@@ -40,11 +40,14 @@ export function getRequiredIssues(): string[] {
   // SMS/TCPA consent text (renders adjacent to every phone field)
   need(c.consent.sms.trim().length > 0, 'consent.sms');
 
-  // Google Ads conversion tracking
-  need(/^AW-/.test(c.tracking.googleAds.conversionId.trim()), 'tracking.googleAds.conversionId (AW-XXXXXXXXX)');
-  need(c.tracking.googleAds.labels.form.trim().length > 0, 'tracking.googleAds.labels.form');
-  need(c.tracking.googleAds.labels.call.trim().length > 0, 'tracking.googleAds.labels.call');
-  need(c.tracking.googleAds.labels.sms.trim().length > 0, 'tracking.googleAds.labels.sms');
+  // Google Ads conversion tracking — NOT required to ship per client: leads are
+  // tracked via the GHL CRM webhook, not Google Ads conversions. gtag and the
+  // trackConversion() helper degrade gracefully when these are empty (Layout only
+  // loads gtag when an AW- ID is present). Re-enable if conversion tracking is added.
+  // need(/^AW-/.test(c.tracking.googleAds.conversionId.trim()), 'tracking.googleAds.conversionId (AW-XXXXXXXXX)');
+  // need(c.tracking.googleAds.labels.form.trim().length > 0, 'tracking.googleAds.labels.form');
+  // need(c.tracking.googleAds.labels.call.trim().length > 0, 'tracking.googleAds.labels.call');
+  // need(c.tracking.googleAds.labels.sms.trim().length > 0, 'tracking.googleAds.labels.sms');
 
   // Clarity (kept on all pages)
   need(c.tracking.clarityId.trim().length > 0, 'tracking.clarityId');
@@ -53,9 +56,12 @@ export function getRequiredIssues(): string[] {
   need(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(c.brand.primaryHex.trim()), 'brand.primaryHex');
   need(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(c.brand.ctaHex.trim()), 'brand.ctaHex');
 
-  // Review aggregates (from live Google profile — never fabricated)
-  need(typeof c.reviews.aggregate.rating === 'number', 'reviews.aggregate.rating');
-  need(typeof c.reviews.aggregate.count === 'number', 'reviews.aggregate.count');
+  // Review aggregates (from live Google profile — never fabricated). Not required
+  // to ship: no page renders a numeric rating (hero shows qualitative "5-Star
+  // Rated on Google"), and the JSON-LD aggregateRating is added only when both are
+  // present (see Layout.astro). Fill both with the real live numbers to enable it.
+  // need(typeof c.reviews.aggregate.rating === 'number', 'reviews.aggregate.rating');
+  // need(typeof c.reviews.aggregate.count === 'number', 'reviews.aggregate.count');
 
   // Deployment domain (canonical + JSON-LD)
   need(c.domain.trim().length > 0, 'domain');

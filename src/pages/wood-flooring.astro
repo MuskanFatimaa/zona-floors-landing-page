@@ -25,26 +25,49 @@ import ProcessSteps from "@/components/ProcessSteps.astro";
 import ProblemSolution from "@/components/ProblemSolution.astro";
 import ProjectGallery from "@/components/ProjectGallery.astro";
 import BeforeAfter from "@/components/BeforeAfter.astro";
+import Guarantees from "@/components/Guarantees.astro";
+import CreativeBanner from "@/components/CreativeBanner.astro";
 import { siteConfig, approvedOffers } from "@/lib/siteConfig";
 import { formatPhone, telHref, smsHref } from "@/lib/phone";
 
 const SLUG = "wood-flooring";
-const { phones, photos, business } = siteConfig;
+const { phones, photos, business, serviceArea } = siteConfig;
 const phone = formatPhone(phones.primary);
 const offer = approvedOffers()[0]?.text ?? "";
 
 const metro = "Phoenix & the East Valley";
 
-// Client-supplied full-bleed finished-install photo for the hero.
-const heroImg =
-  "https://assets.cdn.filesafe.space/y5KUe31gfnk6tGJ4jGNK/media/6a283f9fdade6ea39e5e7027.jpg";
+// Hero uses a real intake project photo (from intake.md) for reliable loading.
+const heroImg = photos.hardwood[4];
+
+// Client-branded promo creatives (self-hosted under /public/creatives). Each is a
+// square sales graphic with a baked-in "Get Free Quote" CTA; rendered as a
+// clickable CreativeBanner that jumps to the lead form so it actually converts.
+const creatives = {
+  sales:     { src: "/creatives/c5.jpg", alt: "Before and after: new wood floors in about 3 days, 4.9-star rated, installed from $2.40 per sq ft" },
+  pricing:   { src: "/creatives/c1.jpg", alt: "Zona Floors hardwood with honest up-front pricing: the price we quote is the price you pay" },
+  financing: { src: "/creatives/c2.jpg", alt: "New floors with 0% interest financing for 12 months, before and after" },
+  speed:     { src: "/creatives/c3.jpg", alt: "From demo to done in 3 days: fast, clean, professional hardwood floor installation" },
+  trust:     { src: "/creatives/c4.jpg", alt: "Local Phoenix Valley flooring contractors: real work, real accountability" },
+};
+
+// Real intake photo for the asymmetric split feature.
+const featureImg = photos.hardwood[0];
+
+// Real, non-fabricated figures for the stats band.
+const stats = [
+  { num: "4.9", unit: "★", label: "Google rating" },
+  { num: "103", unit: "+", label: "Google reviews" },
+  { num: "24", unit: "mo", label: "Labor warranty" },
+  { num: "3-7", unit: "", label: "Day installs" },
+];
 
 // What sets Zona apart (heading shows a Zona quality, not a problem).
 // Each card = one craft strength, one tight line.
 const strengths = [
   {
     problem: "Every plank acclimated in your home",
-    solution: "3–7 days to match your indoor air — so floors stay flat and gap-free in the desert.",
+    solution: "3 to 7 days to match your indoor air, so floors stay flat and gap-free in the desert.",
   },
   {
     problem: "Moisture-tested slabs",
@@ -52,11 +75,11 @@ const strengths = [
   },
   {
     problem: "Flattened, silent subfloors",
-    solution: "No rocking, no hollow spots, no squeaks underfoot — ever.",
+    solution: "No rocking, no hollow spots, no squeaks underfoot, ever.",
   },
   {
     problem: "Honest solid-vs-engineered advice",
-    solution: "We spec the floor that lasts in your home — never an upsell.",
+    solution: "We spec the floor that lasts in your home, never an upsell.",
   },
 ];
 
@@ -93,10 +116,10 @@ const teamPhotos = photos.team.slice(0, 3);
 // supplied names + summaries, not verbatim text). Swap in real Google review
 // text + city before launch.
 const proof = [
-  { name: "Brennen M.", note: "Two-bath remodel — stunning hardwood floors. Crew: Abraham & Rey." },
+  { name: "Brennen M.", note: "Two-bath remodel with stunning hardwood floors. Crew: Abraham & Rey." },
   { name: "Lynn H.", note: "The floors look like they've always been part of the home." },
   { name: "Jim S.", note: "Full demo and new floors across the whole house in a few days." },
-  { name: "Brandon M.", note: "Quality work, courtesy, fair price — would easily use them again." },
+  { name: "Brandon M.", note: "Quality work, courtesy, fair price. Would easily use them again." },
 ];
 
 // Real review-platform logos. Config (siteConfig.badges) is the source of which
@@ -110,8 +133,8 @@ const LOGO_FILES: Record<string, { file: string; w: number; h: number }> = {
   Nextdoor: { file: "/logos/nextdoor.svg", w: 28, h: 28 },
 };
 
-const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No obligation`;
-const privacyNote = "Your info goes straight to our team — no spam, no third parties.";
+const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No pressure, ever`;
+const privacyNote = "Your info goes straight to our team. No spam, no third parties.";
 
 // Shared interaction class strings (consistent micro-interactions, no JS).
 const btnLift =
@@ -121,7 +144,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
 
 <Layout
   title="Hardwood Floor Installation in Phoenix & the East Valley | Zona Floors"
-  description="Expert solid & engineered hardwood floor installation. Licensed, insured, locally-owned Arizona crew. Free in-home estimate — call or request a quote."
+  description="Expert solid & engineered hardwood floor installation. Licensed, insured, locally-owned Arizona crew. Free in-home estimate. Call or request a quote."
 >
   <Header />
 
@@ -146,7 +169,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-dark/85 via-brand-dark/45 to-brand-dark/15"></div>
 
       <div class="text-shadow-strong mx-auto max-w-6xl px-5 pb-16 pt-8 sm:pt-12">
-        <p class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-base font-semibold sm:text-lg">
+        <p class="flex flex-col items-start gap-y-1 text-base font-semibold sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2 sm:gap-y-0.5 sm:text-lg">
           <span class="text-gold" aria-hidden="true">★★★★★</span>
           <span>5-Star Rated on Google</span>
         </p>
@@ -156,8 +179,8 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           Hardwood Floor Installation in <span class="text-gold">{metro}</span>
         </h1>
         <p class="mt-4 max-w-2xl text-xl font-medium text-white sm:text-2xl">
-          Solid &amp; engineered hardwood, installed by a licensed Arizona crew — built to stay
-          flat and gap-free in our dry desert air.
+          No-show contractors? Surprise bills? Not here. Licensed hardwood floor installation,
+          built to stay flat and gap-free in the Arizona desert.
         </p>
 
         <p class="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-base font-extrabold text-brand-dark shadow-lg sm:text-lg">
@@ -175,6 +198,17 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           </a>
         </div>
         <p class="mt-3 text-sm text-white/80">{ctaMicrocopy}</p>
+      </div>
+    </section>
+
+    <!-- ===================== VALUE-PROP STRIP ===================== -->
+    <section class="bg-brand-dark text-white">
+      <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-5 py-3 text-center text-sm font-extrabold uppercase tracking-wide sm:gap-x-7 sm:text-base">
+        <span>Expert Install</span>
+        <span class="text-gold" aria-hidden="true">★</span>
+        <span>Honest Up-Front Pricing</span>
+        <span class="text-gold" aria-hidden="true">★</span>
+        <span>Licensed &amp; Local</span>
       </div>
     </section>
 
@@ -219,6 +253,23 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
+    <!-- ===================== STATS BAND (real numbers, angled) ===================== -->
+    <section
+      class="relative bg-gradient-to-br from-brand-dark to-brand text-white"
+      style="clip-path: polygon(0 24px, 100% 0, 100% 100%, 0 100%)"
+    >
+      <div class="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 px-5 pb-14 pt-20 sm:grid-cols-4 sm:py-20">
+        {stats.map((s, i) => (
+          <div data-reveal data-reveal-delay={(i % 3) + 1} class="text-center">
+            <div class="text-5xl font-extrabold leading-none tracking-tight text-pop sm:text-6xl">
+              {s.num}<span class="text-gold">{s.unit}</span>
+            </div>
+            <div class="mt-2 text-sm font-semibold uppercase tracking-wide text-white/70">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
     <!-- ===================== PRIMARY LEAD FORM ===================== -->
     <section id="lead-form" class="bg-gradient-to-br from-brand-dark to-brand">
       <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
@@ -251,7 +302,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </div>
         <p class="mt-5 text-4xl font-extrabold sm:text-5xl">{offer}</p>
         <p class="mt-3 text-xl text-white/90 sm:text-2xl">
-          A real quote from a licensed crew — solid or engineered, priced for your home.
+          A real, all-in quote from a licensed crew. Solid or engineered, priced for your home, with zero surprises.
         </p>
         <a href="#lead-form"
            class={`mt-7 inline-block rounded-xl bg-white px-7 py-4 text-lg font-extrabold text-cta shadow-lg sm:text-xl ${btnLift}`}>
@@ -261,9 +312,18 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
+    <!-- ===================== GUARANTEES ===================== -->
+    <Guarantees
+      heading="We put our money where your floor is"
+      subhead="Every Zona Floors hardwood install comes with these guarantees, in writing. No surprises, no games."
+    />
+
+    <!-- ===================== PRICING CREATIVE ===================== -->
+    <CreativeBanner src={creatives.pricing.src} alt={creatives.pricing.alt} bg="bg-white" />
+
     <!-- ===================== ZONA QUALITY (was problem/solution) ===================== -->
     <ProblemSolution
-      heading="Why Valley homeowners choose Zona Floors"
+      heading="Hardwood floors built to survive the Arizona desert"
       items={strengths}
     />
 
@@ -271,10 +331,10 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
     <section class="bg-white">
       <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
         <div data-reveal class="text-center">
-          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Explore hardwood options</h2>
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Pick your perfect hardwood 🪵</h2>
           <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
           <p class="mx-auto mt-4 max-w-xl text-xl text-brand/70 sm:text-2xl">
-            Tap a style to start your quote with it selected.
+            Tap a look you love and we'll start your quote with it.
           </p>
         </div>
 
@@ -311,23 +371,67 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </div>
 
         <p class="mx-auto mt-8 max-w-2xl text-center text-xl text-brand/70 sm:text-2xl">
-          Not sure which is right for your space? We'll walk you through it during your free in-home estimate.
+          Can't decide? That's exactly what we're here for. We'll help you choose during your free in-home estimate.
         </p>
       </div>
     </section>
 
+    <!-- ===================== SPLIT FEATURE (asymmetric) ===================== -->
+    <section class="overflow-hidden bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal class="relative">
+          <img
+            src={featureImg}
+            alt="Finished hardwood floor in a Valley living room by Zona Floors"
+            width="800"
+            height="1000"
+            loading="lazy"
+            decoding="async"
+            class="w-full rounded-3xl object-cover shadow-2xl ring-1 ring-black/10"
+          />
+          <span class="absolute -bottom-4 -right-3 rotate-3 rounded-xl bg-pop px-4 py-2 text-base font-extrabold uppercase tracking-wide text-brand-dark shadow-xl ring-2 ring-white">
+            Licensed &amp; local
+          </span>
+        </div>
+        <div data-reveal data-reveal-delay="1">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">A local crew you can actually hold accountable</h2>
+          <span class="mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <ul class="mt-7 space-y-4 text-lg text-brand/80 sm:text-xl">
+            {[
+              `Licensed Arizona contractor (${business.license.number}), never a big-box middleman.`,
+              "Our own installers on every job. No day-labor subs.",
+              "Moisture-tested, acclimated, and flattened for the desert.",
+              "The price we quote is the price you pay. No surprises.",
+            ].map((point) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cta text-white">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="#lead-form" class={`mt-8 inline-block rounded-xl bg-cta px-7 py-4 text-lg font-extrabold text-white shadow-lg hover:bg-cta-dark sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== GALLERY ===================== -->
-    <ProjectGallery heading="Recent hardwood projects" photos={galleryPhotos} />
+    <ProjectGallery heading="Hardwood floors we love to show off" photos={galleryPhotos} />
 
     <!-- ===================== BEFORE / AFTER (renders only with a real pair) ===================== -->
     {ba?.before && ba?.after && (
       <section class="bg-gradient-to-b from-white to-brand/5">
         <div class="mx-auto max-w-4xl px-5 py-14 sm:py-20">
           <div data-reveal class="text-center">
-            <h2 class="text-2xl font-extrabold text-brand sm:text-3xl">See the transformation</h2>
+            <h2 class="text-2xl font-extrabold text-brand sm:text-3xl">Same room. Whole new life.</h2>
             <span class="mx-auto mt-3 block h-1 w-16 rounded bg-gold"></span>
             <p class="mx-auto mt-4 max-w-xl text-lg text-brand/70 sm:text-xl">
-              Drag to compare — the same room, before and after.
+              Drag to compare the same space, before and after.
             </p>
           </div>
           <div data-reveal class="mt-10">
@@ -344,7 +448,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           <h2 class="text-4xl font-extrabold leading-[1.05] sm:text-5xl">The crew behind your floors</h2>
           <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
           <p class="mx-auto mt-5 max-w-xl text-xl text-white/85 sm:text-2xl">
-            Our own installers on the job across the Valley — no day-labor subs, just craftsmen Valley homeowners trust.
+            Our own installers on the job across the Valley. No day-labor subs, just craftsmen Valley homeowners trust.
           </p>
         </div>
         <div class="mt-10 grid gap-4 sm:grid-cols-3">
@@ -363,14 +467,21 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
+    <!-- ===================== TRUST / ACCOUNTABILITY CREATIVE ===================== -->
+    <CreativeBanner src={creatives.trust.src} alt={creatives.trust.alt} bg="bg-brand/5" />
+
     <!-- ===================== SOCIAL PROOF ===================== -->
     <section class="bg-brand/5">
       <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
         <div data-reveal class="text-center">
-          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Neighbors across the Valley trust Zona Floors</h2>
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">The wood floor company Phoenix keeps recommending ⭐</h2>
           <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <div class="mx-auto mt-5 inline-flex items-center gap-2 rounded-full bg-pop px-5 py-2 text-lg font-extrabold text-brand-dark shadow-md ring-1 ring-black/10">
+            <span aria-hidden="true">★★★★★</span>
+            4.9 · 103+ Google reviews
+          </div>
           <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
-            Real homeowners from Tempe to Scottsdale — 5-star rated and reviewed on Google, Yelp, Angi, BBB &amp; Nextdoor.
+            Real homeowners from Tempe to Scottsdale, 5-star rated and reviewed on Google, Yelp, Angi, BBB &amp; Nextdoor.
           </p>
         </div>
 
@@ -445,12 +556,15 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
     </section>
 
     <!-- ===================== PROCESS ===================== -->
-    <ProcessSteps heading="How your hardwood install works" steps={steps} />
+    <ProcessSteps heading="Your new hardwood floor in three easy steps" steps={steps} />
+
+    <!-- ===================== SPEED CREATIVE ===================== -->
+    <CreativeBanner src={creatives.speed.src} alt={creatives.speed.alt} bg="bg-white" />
 
     <!-- ===================== FINAL FORM ===================== -->
     <section class="bg-gradient-to-br from-brand-dark via-brand-dark to-brand text-white">
       <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
-        <h2 class="text-center text-3xl font-extrabold sm:text-4xl">Ready for floors that last?</h2>
+        <h2 class="text-center text-3xl font-extrabold sm:text-4xl">Ready to fall for your floors?</h2>
         <p class="mt-3 text-center text-xl text-white/85 sm:text-2xl">{offer}</p>
         <div class="mt-7 overflow-hidden rounded-2xl border-t-4 border-gold shadow-2xl">
           <LeadForm slug={SLUG} submitLabel="Get My Free Estimate" privacyNote={privacyNote} />
@@ -463,6 +577,38 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </p>
       </div>
     </section>
+
+    <!-- ===================== SERVICE AREA ===================== -->
+    <section class="bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto max-w-5xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Where we install across the Valley</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
+            Proudly serving homeowners throughout {business.address.city} and the greater Phoenix metro and East Valley.
+          </p>
+        </div>
+
+        <ul data-reveal class="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-3">
+          {serviceArea.map((city) => (
+            <li class="flex items-center gap-2 rounded-full border-2 border-brand/10 bg-white px-5 py-2.5 text-lg font-bold text-brand shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-gold hover:shadow-md sm:text-xl">
+              <svg class="h-5 w-5 shrink-0 text-cta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 21s-7-5.5-7-11a7 7 0 1114 0c0 5.5-7 11-7 11z" stroke-linejoin="round"/>
+                <circle cx="12" cy="10" r="2.5"/>
+              </svg>
+              {city}
+            </li>
+          ))}
+        </ul>
+
+        <p data-reveal class="mx-auto mt-8 max-w-2xl text-center text-lg text-brand/60">
+          Don't see your city? Give us a call and we'll let you know if we cover it.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== FINANCING CREATIVE (closer) ===================== -->
+    <CreativeBanner src={creatives.financing.src} alt={creatives.financing.alt} bg="bg-brand-dark" />
   </main>
 
   <Footer />

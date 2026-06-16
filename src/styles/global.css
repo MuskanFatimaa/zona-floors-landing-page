@@ -19,6 +19,7 @@
   --color-cta: #ce1126;         /* Arizona-flag red — calls to action (= ctaHex) */
   --color-cta-dark: #a30e1e;    /* pressed/hover CTA */
   --color-gold: #f4b41a;        /* flag-ray gold — star ratings, accents */
+  --color-pop: #c6f000;         /* electric lime — flashy eye-catch accent (from brand creatives) */
   --color-ink: #15233a;         /* body text — near-black with a blue cast */
 
   /* Premium type. Headings use the display family (see h1-h3 rule below). */

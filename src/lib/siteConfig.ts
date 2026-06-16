@@ -51,6 +51,21 @@ export interface Offer {
   approved: boolean;
 }
 
+export interface Guarantee {
+  /** Machine key — also selects the icon in the Guarantees component. */
+  key: string;
+  /** Compact label for inline chips (e.g. the trust row under a form CTA). */
+  short: string;
+  /** Full headline for the guarantees grid. */
+  label: string;
+  /** One-line plain-language detail. */
+  text: string;
+  /** Optional small-print qualifier (full disclaimer may still be pending sign-off). */
+  note?: string;
+  /** True once the client has approved this guarantee for live use. */
+  approved: boolean;
+}
+
 export interface ReviewQuote {
   name: string;
   /** Which service page this review belongs to. */
@@ -107,6 +122,8 @@ export interface SiteConfig {
   services: ServiceDefinition[];
   /** At least one APPROVED offer is required before any page ships. */
   offers: Offer[];
+  /** Committed conversion guarantees, surfaced across the page. */
+  guarantees: Guarantee[];
   /** Speed-to-lead promise the client will honor. From intake only. */
   speedToLead: string;
   reviews: {
@@ -141,7 +158,9 @@ export interface SiteConfig {
   domain: string;
 }
 
-const ASSET_BASE = 'https://assets.cdn.filesafe.space/y5KUe31gfnk6tGJ4jGNK/media';
+// Self-hosted under /public/media. The original CDN (filesafe.space) blocks
+// hotlinking, so the images are served locally for reliable loading + speed.
+const ASSET_BASE = '/media';
 
 export const siteConfig: SiteConfig = {
   business: {
@@ -223,17 +242,40 @@ export const siteConfig: SiteConfig = {
     {
       key: 'free-estimate',
       label: 'Free Estimate',
-      text: 'Free in-home estimate — no pressure, no obligation',
+      text: 'Free in-home estimate, no pressure, no obligation',
       approved: true,
     },
   ],
 
-  speedToLead: '', // REQUIRED — never write a slow-response promise. From intake only.
+  // Conversion guarantees — COMMITTED & approved 2026-06-16 (intake.md, Chadwick
+  // Simpson). Financing is a SOFT mention only (no APR/term/lender stated) per
+  // client direction 2026-06-16, pending full Reg Z disclosure before any hard
+  // financing ad. Price anchor added to hardwood per client confirmation
+  // 2026-06-16; exact conditions (min sq ft) still pending, so it stays a soft
+  // "ask for details" qualifier rather than a hard guaranteed price.
+  guarantees: [
+    { key: 'warranty', short: '24-Mo Workmanship Warranty', label: '24-Month Workmanship Warranty', text: 'Two full years of coverage on all of our labor.', note: 'Ask us for full warranty details.', approved: true },
+    { key: 'price-match', short: 'Price-Match Guarantee', label: 'Price-Match Guarantee', text: 'We match or beat any comparable written quote, including big-box and local competitors.', note: 'On comparable scope and materials.', approved: true },
+    { key: 'upfront', short: 'Up-Front Pricing', label: 'Honest Up-Front Pricing', text: 'The estimate is the price. No hidden fees, no surprises.', approved: true },
+    { key: 'speed', short: 'Done in 3 to 7 Days', label: 'Most Projects Done in 3 to 7 Days', text: 'In and out fast, with no shortcuts on quality.', approved: true },
+    { key: 'discount', short: '10% Service Discount', label: '10% Off for Those Who Serve', text: 'Veterans, active military, seniors, and first responders save 10%.', note: 'With valid ID.', approved: true },
+    { key: 'install-only', short: 'Install-Only Available', label: 'Install-Only Available', text: 'Already bought your floors? We will professionally install them for you.', approved: true },
+    { key: 'price-anchor', short: 'From $2.40/sq ft', label: 'Installed From $2.40/sq ft', text: 'Quality flooring installed from as low as $2.40 per square foot.', note: 'Starting price on qualifying installs; ask for details.', approved: true },
+    { key: 'financing', short: '0% Financing', label: '0% Financing Available', text: 'Ask us about 0% financing for qualified buyers.', note: 'Subject to credit approval. Ask for full terms.', approved: true },
+  ],
+
+  // Project-completion promise (client-supplied 2026-06-16). NOTE: this is a
+  // project-duration value prop, NOT a lead-response time — rule #3 forbids a
+  // slow-response promise. Phrased so it never reads as "we reply in 3-7 days".
+  speedToLead: 'Most projects are completed in just 3 to 7 days.',
 
   reviews: {
     aggregate: {
-      rating: null, // REQUIRED — from the live Google profile. Do NOT fabricate.
-      count: null,  // REQUIRED — from the live Google profile. Do NOT fabricate.
+      // From the client's own branded creative (c5): "4.9 RATING (103+ Google
+      // Reviews)". 103 is the conservative floor of "103+"; confirm the exact live
+      // count before relying on it in structured data.
+      rating: 4.9,
+      count: 103,
       platform: 'Google',
     },
     // Intake supplied reviewer names + paraphrased summaries only.
@@ -308,10 +350,12 @@ export const siteConfig: SiteConfig = {
   },
 
   consent: {
-    sms: '', // REQUIRED — TCPA/SMS consent language, client-approved. Renders by every phone field.
+    // From intake. NOTE: client written sign-off + 10DLC match still pending —
+    // confirm this wording matches the registered 10DLC campaign before launch.
+    sms: "By submitting, you agree Zona Floors may call & text you (incl. automated) about your project. Consent isn't required to buy. Msg & data rates may apply. Reply STOP to opt out, HELP for help. Privacy Policy & Terms apply.",
   },
 
-  domain: '', // REQUIRED — final deployment domain, e.g. "zonafloors.com"
+  domain: 'zonafloors.net', // From intake (deploy target; push to GitHub).
 };
 
 /** Convenience accessor for a service definition by slug. */
@@ -329,4 +373,9 @@ export function readyReviews(service?: ReviewQuote['service']): ReviewQuote[] {
 /** Offers approved for live use. */
 export function approvedOffers(): Offer[] {
   return siteConfig.offers.filter((o) => o.approved && o.text.trim().length > 0);
+}
+
+/** Guarantees approved for live use. */
+export function approvedGuarantees(): Guarantee[] {
+  return siteConfig.guarantees.filter((g) => g.approved && g.text.trim().length > 0);
 }
