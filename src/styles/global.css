@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Self-hosted variable fonts (display=swap built in). Sophisticated pairing:
+   Fraunces (an elegant display serif with optical sizing) for headings,
+   DM Sans for body. */
+@import "@fontsource-variable/dm-sans/index.css";
+@import "@fontsource-variable/fraunces/index.css";
+
 /*
  * Brand theme — derived from the Zona Floors logo (Arizona state-flag identity:
  * blue mountains, red/gold rays, black base, copper star).
@@ -15,18 +21,30 @@
   --color-gold: #f4b41a;        /* flag-ray gold — star ratings, accents */
   --color-ink: #15233a;         /* body text — near-black with a blue cast */
 
-  /* Build preference (intake): Extra Large type, mobile-first. */
-  --text-base: 1.1875rem;       /* 19px */
-  --text-lg: 1.375rem;          /* 22px */
-  --text-xl: 1.75rem;           /* 28px */
-  --text-2xl: 2.125rem;         /* 34px */
-  --text-3xl: 2.625rem;         /* 42px */
-  --text-4xl: 3.25rem;          /* 52px */
-  --text-5xl: 3.75rem;          /* 60px */
+  /* Premium type. Headings use the display family (see h1-h3 rule below). */
+  --font-sans: "DM Sans Variable", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
+
+  /*
+   * Fluid type scale (mobile → desktop) via clamp().
+   * Tuned EXTRA LARGE per client preference: large even on a 390px phone, and
+   * bigger still on desktop. Tailwind v4 reads these tokens, so every
+   * text-xs..text-5xl utility in the markup updates for free. Pure CSS,
+   * zero JS, zero layout shift.
+   */
+  --text-xs:   clamp(0.9375rem, 0.90rem + 0.18vw, 1rem);       /* 15 → 16 */
+  --text-sm:   clamp(1.0625rem, 1.02rem + 0.22vw, 1.1875rem);  /* 17 → 19 */
+  --text-base: clamp(1.1875rem, 1.11rem + 0.38vw, 1.5rem);     /* 19 → 24 */
+  --text-lg:   clamp(1.3125rem, 1.21rem + 0.52vw, 1.6875rem);  /* 21 → 27 */
+  --text-xl:   clamp(1.5rem,    1.35rem + 0.74vw, 2rem);        /* 24 → 32 */
+  --text-2xl:  clamp(1.75rem,   1.48rem + 1.30vw, 2.625rem);    /* 28 → 42 */
+  --text-3xl:  clamp(2rem,      1.58rem + 1.95vw, 3.125rem);    /* 32 → 50 */
+  --text-4xl:  clamp(2.375rem,  1.80rem + 2.70vw, 3.875rem);    /* 38 → 62 */
+  --text-5xl:  clamp(2.625rem,  1.92rem + 3.45vw, 4.625rem);    /* 42 → 74 */
 }
 
 :root {
-  font-size: 19px; /* Extra Large base — scale the whole type system up */
+  font-size: 16px; /* predictable rem math; the "Extra Large" feel lives in the clamp scale */
 }
 
 html {
@@ -36,9 +54,24 @@ html {
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   color: var(--color-ink);
+}
+
+/* Display font for headings (avoids per-element class churn). Fraunces reads
+   best at full optical size with only a hair of negative tracking. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.005em;
+  font-optical-sizing: auto;
+}
+
+/* Legibility for light text over photos (hero) without a heavy flat overlay. */
+.text-shadow-strong {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 /* Visually-hidden honeypot field (LeadForm). Not display:none — bots skip those. */
@@ -48,4 +81,26 @@ body {
   width: 1px;
   height: 1px;
   overflow: hidden;
+}
+
+/*
+ * Scroll-reveal. Defined ONLY inside the no-preference media query, so users who
+ * ask for reduced motion get fully-static, visible content with no JS toggling.
+ * Animate opacity/transform only (GPU-friendly, no CLS). reveal.ts adds .is-visible.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Scoped to html.js: if JS never runs, nothing is hidden. */
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    will-change: opacity, transform;
+  }
+  html.js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  html.js [data-reveal][data-reveal-delay="1"] { transition-delay: 80ms; }
+  html.js [data-reveal][data-reveal-delay="2"] { transition-delay: 160ms; }
+  html.js [data-reveal][data-reveal-delay="3"] { transition-delay: 240ms; }
 }

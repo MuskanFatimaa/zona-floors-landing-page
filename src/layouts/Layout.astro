@@ -63,6 +63,10 @@ if (
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Mark JS as available so scroll-reveal only hides content when it can
+         actually un-hide it. No JS / JS error → content stays visible. -->
+    <script is:inline>document.documentElement.classList.add("js");</script>
+
     <!-- claude.md #4: every page is noindex (paid traffic only). -->
     <meta name="robots" content="noindex, nofollow" />
     {canonical && <link rel="canonical" href={canonical} />}

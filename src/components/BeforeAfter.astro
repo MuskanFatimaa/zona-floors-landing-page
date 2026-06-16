@@ -1,0 +1,91 @@
+---
+/**
+ * BeforeAfter — interactive before/after image comparison slider.
+ *
+ * Both images fill the same fixed-aspect box; the "before" image is revealed by
+ * a clip-path driven by a range input (keyboard-accessible) and pointer drag.
+ * Renders nothing unless BOTH real images are supplied — we never fabricate a
+ * "before" shot (claude.md rule #1).
+ */
+interface Props {
+  before: string;
+  after: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+  alt?: string;
+}
+const {
+  before,
+  after,
+  beforeLabel = "Before",
+  afterLabel = "After",
+  alt = "Hardwood flooring project",
+} = Astro.props;
+---
+
+{before && after && (
+  <div
+    data-ba
+    class="relative aspect-[4/3] w-full select-none overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5"
+  >
+    <img src={after} alt={`${alt} — after`} loading="lazy" decoding="async"
+         class="absolute inset-0 h-full w-full object-cover" />
+    <img src={before} alt={`${alt} — before`} loading="lazy" decoding="async" data-ba-before
+         class="absolute inset-0 h-full w-full object-cover [clip-path:inset(0_50%_0_0)]" />
+
+    <span class="pointer-events-none absolute left-4 top-4 rounded-full bg-brand-dark/80 px-3 py-1 text-sm font-bold text-white">{beforeLabel}</span>
+    <span class="pointer-events-none absolute right-4 top-4 rounded-full bg-cta/90 px-3 py-1 text-sm font-bold text-white">{afterLabel}</span>
+
+    <!-- Divider + grip -->
+    <div data-ba-handle class="pointer-events-none absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.15)]">
+      <div class="absolute top-1/2 left-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-brand shadow-lg ring-1 ring-black/10">
+        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 7l-5 5 5 5M15 7l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <input
+      type="range" min="0" max="100" value="50" step="1"
+      data-ba-range
+      aria-label="Drag to compare before and after"
+      class="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+    />
+  </div>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-ba]").forEach((root) => {
+    const before = root.querySelector<HTMLElement>("[data-ba-before]");
+    const handle = root.querySelector<HTMLElement>("[data-ba-handle]");
+    const range = root.querySelector<HTMLInputElement>("[data-ba-range]");
+    if (!before || !handle || !range) return;
+
+    const set = (v: number) => {
+      const pct = Math.max(0, Math.min(100, v));
+      before.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+      handle.style.left = `${pct}%`;
+    };
+    range.addEventListener("input", () => set(Number(range.value)));
+
+    // Pointer drag anywhere on the image.
+    const onMove = (clientX: number) => {
+      const rect = root.getBoundingClientRect();
+      const pct = ((clientX - rect.left) / rect.width) * 100;
+      range.value = String(Math.round(pct));
+      set(pct);
+    };
+    root.addEventListener("pointerdown", (e) => {
+      onMove(e.clientX);
+      const move = (ev: PointerEvent) => onMove(ev.clientX);
+      const up = () => {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    });
+
+    set(50);
+  });
+</script>

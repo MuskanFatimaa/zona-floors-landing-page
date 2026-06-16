@@ -122,6 +122,9 @@ export interface SiteConfig {
     laminate: string[];
     team: string[];
   };
+  /** Optional before/after pair (same space, before + finished) for the
+   *  comparison slider. BOTH required to render — never fabricate a "before". */
+  beforeAfter?: { before: string; after: string };
   brand: {
     logo: string;
     /** Primary brand hex, extracted from the logo. */
@@ -278,6 +281,11 @@ export const siteConfig: SiteConfig = {
       `${ASSET_BASE}/6a232cc86a06f03d4477c039.jpg`,
     ],
   },
+
+  // REQUIRED for the before/after slider: a real matched pair (same room, old
+  // floor → finished hardwood). Intake supplied none — left empty so nothing
+  // fabricated ships. Fill both to make the slider appear.
+  beforeAfter: { before: '', after: '' },
 
   brand: {
     logo: `${ASSET_BASE}/6a21a870bf33b4d0d048ecf6.jpg`,

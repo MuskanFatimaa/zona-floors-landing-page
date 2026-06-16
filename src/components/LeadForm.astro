@@ -20,9 +20,26 @@ interface Props {
   submitLabel?: string;
   /** Optional form heading. */
   heading?: string;
+  /** Optional, non-required dropdown (e.g. "Hardwood you're considering"). */
+  projectLabel?: string;
+  /** Field name for the optional dropdown. */
+  projectName?: string;
+  /** Options for the optional dropdown. When empty, the field is not rendered. */
+  projectOptions?: string[];
+  /** Short reassurance line under the submit button. */
+  privacyNote?: string;
 }
-const { slug, submitLabel = "Get My Free Quote", heading } = Astro.props;
+const {
+  slug,
+  submitLabel = "Get My Free Quote",
+  heading,
+  projectLabel,
+  projectName = "project_type",
+  projectOptions = [],
+  privacyNote,
+} = Astro.props;
 const consent = siteConfig.consent.sms;
+const showProject = projectOptions.length > 0;
 ---
 
 <form
@@ -87,12 +104,34 @@ const consent = siteConfig.consent.sms;
       />
     </label>
 
+    {showProject && (
+      <label class="block">
+        <span class="mb-1 block font-semibold text-brand">
+          {projectLabel}
+          <span class="font-normal text-brand/50"> (optional)</span>
+        </span>
+        <select
+          name={projectName}
+          data-project-select
+          class="w-full rounded-lg border border-black/20 bg-white px-4 py-3 text-lg focus:border-cta focus:outline-none focus:ring-2 focus:ring-cta/30"
+        >
+          <option value="">I'm not sure yet</option>
+          {projectOptions.map((opt) => <option value={opt}>{opt}</option>)}
+        </select>
+      </label>
+    )}
+
     <button
       type="submit"
-      class="mt-1 w-full rounded-lg bg-cta px-5 py-4 text-xl font-extrabold text-white shadow-sm transition-colors hover:bg-cta-dark disabled:opacity-60"
+      class="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-cta px-5 py-4 text-xl font-extrabold text-white shadow-sm transition-colors hover:bg-cta-dark disabled:opacity-60"
     >
       {submitLabel}
+      <span aria-hidden="true">→</span>
     </button>
+
+    {privacyNote && (
+      <p class="text-center text-xs text-brand/55">{privacyNote}</p>
+    )}
   </div>
 </form>
 

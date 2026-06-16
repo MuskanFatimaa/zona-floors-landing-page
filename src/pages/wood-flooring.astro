@@ -7,12 +7,14 @@
  * "Get a free project quote", "Licensed, insured, and locally owned in
  * Arizona", "Expert Wood Floor Acclimation", "precision craftsmanship".
  *
- * Copy is a FIRST DRAFT for review (per the build gate). Items still pending
- * client confirmation are noted in the handoff, not invented here:
- *   - exact offer wording (free in-home estimate — ad-supported, flagged)
- *   - speed-to-lead promise (NOT claimed; intake hasn't supplied one)
- *   - verbatim Google review text (shown as attributed summaries for now)
- *   - aggregate rating + count (shown qualitatively as "5-Star Rated on Google")
+ * DATA STILL PENDING (intake — NOT fabricated here; layout is built to accept it):
+ *   - aggregate rating + count  → qualitative "5-Star Rated on Google" only;
+ *     numeric rating renders only once siteConfig supplies it.
+ *   - verbatim Google review text + reviewer cities → cards show attributed
+ *     paraphrases, clearly labelled as highlights, not quotes.
+ *   - speed-to-lead promise     → intentionally absent (rule #3).
+ *   - exact offer wording       → free in-home estimate (ad-supported, flagged
+ *     pending final client sign-off in siteConfig).
  */
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -22,6 +24,7 @@ import LeadForm from "@/components/LeadForm.astro";
 import ProcessSteps from "@/components/ProcessSteps.astro";
 import ProblemSolution from "@/components/ProblemSolution.astro";
 import ProjectGallery from "@/components/ProjectGallery.astro";
+import BeforeAfter from "@/components/BeforeAfter.astro";
 import { siteConfig, approvedOffers } from "@/lib/siteConfig";
 import { formatPhone, telHref, smsHref } from "@/lib/phone";
 
@@ -32,54 +35,88 @@ const offer = approvedOffers()[0]?.text ?? "";
 
 const metro = "Phoenix & the East Valley";
 
-// Largest pain point first (rule #11): desert-climate plank failure.
-const problems = [
+// Client-supplied full-bleed finished-install photo for the hero.
+const heroImg =
+  "https://assets.cdn.filesafe.space/y5KUe31gfnk6tGJ4jGNK/media/6a283f9fdade6ea39e5e7027.jpg";
+
+// What sets Zona apart (heading shows a Zona quality, not a problem).
+// Each card = one craft strength, one tight line.
+const strengths = [
   {
-    problem: "Floors that gap, cup, and squeak within a year",
-    solution:
-      "Arizona's dry heat wrecks rushed installs. We acclimate every plank in your home for 3–7 days so the wood matches your indoor humidity before a single board is nailed — so it stays flat and gap-free.",
+    problem: "Every plank acclimated in your home",
+    solution: "3–7 days to match your indoor air — so floors stay flat and gap-free in the desert.",
   },
   {
-    problem: "Concrete slabs that trap moisture",
-    solution:
-      "Most Valley homes sit on slab. We meter subfloor and slab moisture before we start and install the right vapor barrier, so moisture never pushes up and ruins your floor.",
+    problem: "Moisture-tested slabs",
+    solution: "We meter the slab and set the right vapor barrier before a single board goes down.",
   },
   {
-    problem: "Wavy subfloors that make planks rock and creak",
-    solution:
-      "We flatten the subfloor to spec before laying a board. Tight seams, no rocking, no hollow spots underfoot.",
+    problem: "Flattened, silent subfloors",
+    solution: "No rocking, no hollow spots, no squeaks underfoot — ever.",
   },
   {
-    problem: "Solid vs. engineered — the wrong pick for your home",
-    solution:
-      "We walk you through solid and engineered hardwood for your subfloor, rooms, and budget, so you buy the floor that lasts in your home — not an upsell.",
+    problem: "Honest solid-vs-engineered advice",
+    solution: "We spec the floor that lasts in your home — never an upsell.",
   },
 ];
 
 const steps = [
-  { title: "Free in-home estimate", body: "We measure, talk through solid vs. engineered, and give you a clear written quote. No pressure, no obligation." },
-  { title: "Prep & acclimate", body: "We test moisture, flatten the subfloor, and let your hardwood acclimate to your home so it won't gap or cup later." },
-  { title: "Precision install & walkthrough", body: "Tight seams, clean transitions, expansion gaps hidden under trim — then we walk the finished floor with you." },
+  { title: "Free in-home estimate", body: "We measure, talk solid vs. engineered, and give you a clear written quote." },
+  { title: "Prep & acclimate", body: "Moisture-test, flatten the subfloor, and let your hardwood adjust to your home." },
+  { title: "Precision install & walkthrough", body: "Tight seams, clean transitions, then we walk the finished floor with you." },
 ];
 
 const galleryPhotos = [
   { src: photos.hardwood[0], label: "Recent hardwood installation" },
-  { src: photos.hardwood[1], label: "Engineered hardwood, open living area" },
+  { src: photos.hardwood[1], label: "Engineered hardwood, bathroom remodel" },
   { src: photos.hardwood[2], label: "Tight seams and clean plank transitions" },
   { src: photos.hardwood[3], label: "Wide-plank wood flooring" },
   { src: photos.hardwood[4], label: "Hardwood throughout the main floor" },
 ];
 
-// Social proof — hardwood + general reviewers, attributed summaries (NOT
-// presented as verbatim quotes). Swap in real Google review text before launch.
-const proof = [
-  { name: "Brennen M.", note: "Two-bath remodel finished with stunning hardwood floors. Crew: Abraham & Rey." },
-  { name: "Lynn H.", note: "Whole-house project — the floors look like they've always been part of the home." },
-  { name: "Jim S.", note: "Full-home demo and new floors completed in just a few days." },
-  { name: "Brandon M.", note: "Quality workmanship, courtesy, and a fair price — would easily use them again." },
+// Interactive species selector. Clicking a card pre-selects it in the lead form.
+// Descriptors are generic wood-species facts, not internal sales claims.
+// Species swatch imagery supplied by client in /public/images.
+const species = [
+  { name: "White Oak", note: "Timeless & hard-wearing", img: "/images/whiteoak.jpg" },
+  { name: "Walnut", note: "Rich, premium tones", img: "/images/walnut.jpg" },
+  { name: "Maple", note: "Warm & budget-friendly", img: "/images/maple.jpg" },
 ];
 
+const ba = siteConfig.beforeAfter;
+const projectOptions = ["White Oak", "Walnut", "Maple", "Engineered hardwood", "Other / not sure"];
+
+// Team-at-work photos (real job-site photos from intake).
+const teamPhotos = photos.team.slice(0, 3);
+
+// Social proof — hardwood + general reviewers. Attributed PARAPHRASES (intake
+// supplied names + summaries, not verbatim text). Swap in real Google review
+// text + city before launch.
+const proof = [
+  { name: "Brennen M.", note: "Two-bath remodel — stunning hardwood floors. Crew: Abraham & Rey." },
+  { name: "Lynn H.", note: "The floors look like they've always been part of the home." },
+  { name: "Jim S.", note: "Full demo and new floors across the whole house in a few days." },
+  { name: "Brandon M.", note: "Quality work, courtesy, fair price — would easily use them again." },
+];
+
+// Real review-platform logos. Config (siteConfig.badges) is the source of which
+// platforms; this map carries the rendering asset + intrinsic ratio (for CLS).
+// Angi (.png) and BBB (.svg) supplied by the client; the rest are official marks.
+const LOGO_FILES: Record<string, { file: string; w: number; h: number }> = {
+  Google: { file: "/logos/google.svg", w: 28, h: 28 },
+  Yelp: { file: "/logos/yelp.svg", w: 28, h: 28 },
+  Angi: { file: "/logos/angi.png", w: 46, h: 28 },
+  BBB: { file: "/logos/bbbsvg.svg", w: 16, h: 28 },
+  Nextdoor: { file: "/logos/nextdoor.svg", w: 28, h: 28 },
+};
+
 const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No obligation`;
+const privacyNote = "Your info goes straight to our team — no spam, no third parties.";
+
+// Shared interaction class strings (consistent micro-interactions, no JS).
+const btnLift =
+  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2";
+const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-lg";
 ---
 
 <Layout
@@ -90,100 +127,319 @@ const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No
 
   <main>
     <!-- ===================== HERO ===================== -->
-    <section class="bg-brand text-white">
-      <div class="mx-auto max-w-6xl px-4 pb-6 pt-4">
-        <p class="flex items-center gap-2 whitespace-nowrap text-base font-semibold">
+    <section class="relative isolate overflow-hidden text-white">
+      <!-- Full-bleed finished-install photo (LCP image, priority-loaded). -->
+      <img
+        src={heroImg}
+        alt="Finished hardwood floor installed by Zona Floors"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async"
+        width="1600"
+        height="1067"
+        sizes="100vw"
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+      <!-- Light, top-anchored scrim: darker behind the copy, clearing toward the
+           foreground so the actual hardwood floor stays visible. Text-shadow
+           (on the content) carries the rest of the legibility. -->
+      <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-dark/85 via-brand-dark/45 to-brand-dark/15"></div>
+
+      <div class="text-shadow-strong mx-auto max-w-6xl px-5 pb-16 pt-8 sm:pt-12">
+        <p class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-base font-semibold sm:text-lg">
           <span class="text-gold" aria-hidden="true">★★★★★</span>
           <span>5-Star Rated on Google</span>
         </p>
+        <span class="mt-3 block h-px w-12 bg-gold/70"></span>
 
-        <h1 class="mt-2 text-3xl font-extrabold leading-[1.05] sm:text-4xl lg:text-5xl">
-          Hardwood Floor Installation in {metro}
+        <h1 class="mt-4 max-w-3xl text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+          Hardwood Floor Installation in <span class="text-gold">{metro}</span>
         </h1>
-        <p class="mt-2 text-base font-medium text-white/90 sm:text-lg">
-          Solid &amp; engineered hardwood, installed by a licensed Arizona crew — built to
-          stay flat and gap-free in our dry desert air.
+        <p class="mt-4 max-w-2xl text-xl font-medium text-white sm:text-2xl">
+          Solid &amp; engineered hardwood, installed by a licensed Arizona crew — built to stay
+          flat and gap-free in our dry desert air.
         </p>
 
-        <p class="mt-3 inline-block rounded-lg bg-gold px-4 py-2 text-lg font-extrabold text-brand-dark">
+        <p class="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-base font-extrabold text-brand-dark shadow-lg sm:text-lg">
           {offer}
         </p>
 
-        <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
           <a href="#lead-form"
-             class="rounded-xl bg-cta px-6 py-3.5 text-center text-lg font-extrabold text-white shadow-lg transition-colors hover:bg-cta-dark">
-            Get My Free Estimate
+             class={`rounded-xl bg-cta px-6 py-4 text-center text-lg font-extrabold text-white shadow-xl hover:bg-cta-dark sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
           </a>
           <a href={telHref(phones.primary)} data-track-call
-             class="rounded-xl border-2 border-white px-6 py-3.5 text-center text-lg font-extrabold text-white">
+             class={`rounded-xl border-2 border-white/80 bg-white/10 px-6 py-4 text-center text-lg font-extrabold text-white backdrop-blur hover:bg-white/20 sm:text-xl ${btnLift}`}>
             Call {phone}
           </a>
         </div>
-        <p class="mt-2 text-sm text-white/75">{ctaMicrocopy}</p>
+        <p class="mt-3 text-sm text-white/80">{ctaMicrocopy}</p>
+      </div>
+    </section>
+
+    <!-- ===================== TRUST ICON ROW (horizontal) ===================== -->
+    <section class="border-b border-black/10 bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto grid max-w-5xl grid-cols-3 gap-2 px-3 py-7 sm:gap-6 sm:px-5">
+        <div data-reveal data-reveal-delay="1" class="flex flex-col items-center gap-2 text-center sm:flex-row sm:gap-3 sm:text-left">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-md sm:h-14 sm:w-14">
+            <svg class="h-6 w-6 sm:h-8 sm:w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke-linejoin="round"/>
+              <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>
+            <span class="block font-extrabold leading-tight text-brand">AZ Licensed</span>
+            <span class="block text-sm leading-tight text-brand/60" data-license>ROC #336899</span>
+          </span>
+        </div>
+        <div data-reveal data-reveal-delay="2" class="flex flex-col items-center gap-2 text-center sm:flex-row sm:gap-3 sm:text-left">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gold text-white shadow-md sm:h-14 sm:w-14">
+            <svg class="h-6 w-6 sm:h-8 sm:w-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2l3 6.5 7 .6-5.3 4.6 1.6 6.9L12 17.5 5.7 20.6l1.6-6.9L2 9.1l7-.6L12 2z"/>
+            </svg>
+          </span>
+          <span>
+            <span class="block font-extrabold leading-tight text-brand">5-Star Rated</span>
+            <span class="block text-sm leading-tight text-brand/60">on Google</span>
+          </span>
+        </div>
+        <div data-reveal data-reveal-delay="3" class="flex flex-col items-center gap-2 text-center sm:flex-row sm:gap-3 sm:text-left">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cta text-white shadow-md sm:h-14 sm:w-14">
+            <svg class="h-6 w-6 sm:h-8 sm:w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 21s-7-5.5-7-11a7 7 0 1114 0c0 5.5-7 11-7 11z" stroke-linejoin="round"/>
+              <circle cx="12" cy="10" r="2.5"/>
+            </svg>
+          </span>
+          <span>
+            <span class="block font-extrabold leading-tight text-brand">Phoenix Local</span>
+            <span class="block text-sm leading-tight text-brand/60">Tempe-based crew</span>
+          </span>
+        </div>
       </div>
     </section>
 
     <!-- ===================== PRIMARY LEAD FORM ===================== -->
-    <section id="lead-form" class="bg-brand-dark">
-      <div class="mx-auto max-w-xl px-4 py-10">
-        <LeadForm slug={SLUG} heading="Get your free hardwood estimate" submitLabel="Get My Free Estimate" />
-      </div>
-    </section>
-
-    <!-- ===================== TRUST ROW ===================== -->
-    <section class="border-b border-black/10 bg-white">
-      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 py-4 text-center text-lg font-semibold text-brand">
-        <span><span class="text-gold" aria-hidden="true">★★★★★</span> 5-Star on Google</span>
-        <span aria-hidden="true" class="text-brand/30">•</span>
-        <span data-license>Licensed &amp; Insured · {business.license.number}</span>
-        <span aria-hidden="true" class="text-brand/30">•</span>
-        <span>Locally Owned in Arizona</span>
+    <section id="lead-form" class="bg-gradient-to-br from-brand-dark to-brand">
+      <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
+        <div class="overflow-hidden rounded-2xl border-t-4 border-gold shadow-2xl">
+          <LeadForm
+            slug={SLUG}
+            heading="Get your free hardwood estimate"
+            submitLabel="Get My Free Estimate"
+            projectLabel="Hardwood you're considering"
+            projectName="hardwood_type"
+            projectOptions={projectOptions}
+            privacyNote={privacyNote}
+          />
+        </div>
       </div>
     </section>
 
     <!-- ===================== OFFER BLOCK ===================== -->
-    <section class="bg-cta text-white">
-      <div class="mx-auto max-w-4xl px-4 py-10 text-center">
-        <p class="text-3xl font-extrabold">{offer}</p>
-        <p class="mt-2 text-xl text-white/90">
+    <section class="bg-gradient-to-br from-cta to-cta-dark text-white">
+      <div data-reveal class="mx-auto max-w-4xl px-5 py-14 text-center sm:py-20">
+        <div class="mx-auto flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-full bg-white/10 px-5 py-2.5 text-lg font-semibold text-white ring-1 ring-white/15 sm:text-xl">
+          <span class="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <span class="text-gold" aria-hidden="true">★★★★★</span>
+            5-Star rated
+          </span>
+          <span class="hidden text-white/35 sm:inline" aria-hidden="true">·</span>
+          <span class="whitespace-nowrap">Licensed AZ crew</span>
+          <span class="hidden text-white/35 sm:inline" aria-hidden="true">·</span>
+          <span class="whitespace-nowrap">Locally owned</span>
+        </div>
+        <p class="mt-5 text-4xl font-extrabold sm:text-5xl">{offer}</p>
+        <p class="mt-3 text-xl text-white/90 sm:text-2xl">
           A real quote from a licensed crew — solid or engineered, priced for your home.
         </p>
         <a href="#lead-form"
-           class="mt-5 inline-block rounded-xl bg-white px-7 py-4 text-xl font-extrabold text-cta shadow-lg">
-          Book My Free Estimate
+           class={`mt-7 inline-block rounded-xl bg-white px-7 py-4 text-lg font-extrabold text-cta shadow-lg sm:text-xl ${btnLift}`}>
+          Book My Free Estimate →
         </a>
-        <p class="mt-3 text-base text-white/80">Takes about a minute · No obligation</p>
+        <p class="mt-3 text-base text-white/85">Takes about a minute · No obligation</p>
       </div>
     </section>
 
-    <!-- ===================== PROBLEM / SOLUTION ===================== -->
+    <!-- ===================== ZONA QUALITY (was problem/solution) ===================== -->
     <ProblemSolution
-      heading="Why hardwood fails in Arizona — and how we prevent it"
-      items={problems}
+      heading="Why Valley homeowners choose Zona Floors"
+      items={strengths}
     />
+
+    <!-- ===================== SPECIES SELECTOR ===================== -->
+    <section class="bg-white">
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Explore hardwood options</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-xl text-xl text-brand/70 sm:text-2xl">
+            Tap a style to start your quote with it selected.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {species.map((s, i) => (
+            <button
+              type="button"
+              data-species={s.name}
+              data-reveal
+              data-reveal-delay={i + 1}
+              class={`group flex flex-col overflow-hidden rounded-2xl border-2 border-brand/10 bg-white text-left hover:border-cta ${cardLift} ${btnLift}`}
+            >
+              <span class="block overflow-hidden">
+                <img
+                  src={s.img}
+                  alt={`${s.name} hardwood flooring`}
+                  width="320"
+                  height="240"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </span>
+              <span class="flex grow flex-col p-6">
+                <span class="text-2xl font-extrabold text-brand sm:text-3xl">{s.name}</span>
+                <span class="mt-1 text-lg text-brand/70 sm:text-xl">{s.note}</span>
+                <span class="mt-4 text-lg font-bold text-cta sm:text-xl">
+                  Start with {s.name}
+                  <span class="inline-block transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true"> →</span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <p class="mx-auto mt-8 max-w-2xl text-center text-xl text-brand/70 sm:text-2xl">
+          Not sure which is right for your space? We'll walk you through it during your free in-home estimate.
+        </p>
+      </div>
+    </section>
 
     <!-- ===================== GALLERY ===================== -->
     <ProjectGallery heading="Recent hardwood projects" photos={galleryPhotos} />
 
-    <!-- ===================== SOCIAL PROOF ===================== -->
-    <section class="bg-brand/5">
-      <div class="mx-auto max-w-6xl px-4 py-12">
-        <h2 class="text-center text-3xl font-extrabold text-brand">Neighbors across the Valley trust Zona Floors</h2>
-        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {proof.map((p) => (
-            <figure class="flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
-              <div class="text-gold" aria-hidden="true">★★★★★</div>
-              <p class="mt-2 grow text-lg text-ink">{p.note}</p>
-              <figcaption class="mt-3 font-bold text-brand/80">— {p.name} · Google review</figcaption>
-            </figure>
+    <!-- ===================== BEFORE / AFTER (renders only with a real pair) ===================== -->
+    {ba?.before && ba?.after && (
+      <section class="bg-gradient-to-b from-white to-brand/5">
+        <div class="mx-auto max-w-4xl px-5 py-14 sm:py-20">
+          <div data-reveal class="text-center">
+            <h2 class="text-2xl font-extrabold text-brand sm:text-3xl">See the transformation</h2>
+            <span class="mx-auto mt-3 block h-1 w-16 rounded bg-gold"></span>
+            <p class="mx-auto mt-4 max-w-xl text-lg text-brand/70 sm:text-xl">
+              Drag to compare — the same room, before and after.
+            </p>
+          </div>
+          <div data-reveal class="mt-10">
+            <BeforeAfter before={ba.before} after={ba.after} alt="Zona Floors hardwood project" />
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ===================== TEAM AT WORK ===================== -->
+    <section class="bg-gradient-to-b from-brand to-brand-dark text-white">
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-4xl font-extrabold leading-[1.05] sm:text-5xl">The crew behind your floors</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-5 max-w-xl text-xl text-white/85 sm:text-2xl">
+            Our own installers on the job across the Valley — no day-labor subs, just craftsmen Valley homeowners trust.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-4 sm:grid-cols-3">
+          {teamPhotos.map((src, i) => (
+            <div data-reveal data-reveal-delay={i + 1} class="group overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/10">
+              <img
+                src={src}
+                alt={`Zona Floors installer at work (${i + 1})`}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
           ))}
         </div>
-        <div class="mt-8 text-center">
+      </div>
+    </section>
+
+    <!-- ===================== SOCIAL PROOF ===================== -->
+    <section class="bg-brand/5">
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Neighbors across the Valley trust Zona Floors</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
+            Real homeowners from Tempe to Scottsdale — 5-star rated and reviewed on Google, Yelp, Angi, BBB &amp; Nextdoor.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {proof.map((p, i) => {
+            const initials = p.name.split(" ").map((w) => w[0]).join("").slice(0, 2);
+            const avatarTone = ["from-brand to-brand-dark", "from-cta to-cta-dark", "from-gold to-cta", "from-brand-dark to-brand"][i % 4];
+            return (
+              <figure
+                data-reveal
+                data-reveal-delay={(i % 3) + 1}
+                class={`group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-brand/10 bg-white p-6 shadow-sm ${cardLift} hover:border-gold/60`}
+              >
+                <!-- Colored accent bar sweeps in on hover. -->
+                <span class="absolute inset-x-0 top-0 h-1.5 origin-left scale-x-0 bg-gradient-to-r from-gold via-cta to-gold transition-transform duration-300 group-hover:scale-x-100"></span>
+                <div class="flex items-center gap-3">
+                  <span class={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${avatarTone} text-lg font-extrabold uppercase text-white shadow-md ring-2 ring-white`}>
+                    {initials}
+                  </span>
+                  <div class="min-w-0">
+                    <figcaption class="truncate text-lg font-extrabold text-brand">{p.name}</figcaption>
+                    <div class="text-base leading-none text-gold" aria-hidden="true">★★★★★</div>
+                  </div>
+                  <img src="/logos/google.svg" alt="" width="24" height="24" class="ml-auto h-6 w-6 shrink-0" />
+                </div>
+                <span class="sr-only">{p.name} rated Zona Floors 5 out of 5 stars on Google</span>
+                <p class="mt-4 grow text-lg leading-relaxed text-ink sm:text-xl">{p.note}</p>
+                <p class="mt-4 flex items-center gap-1.5 text-sm font-semibold text-brand/55">
+                  <svg class="h-4 w-4 text-cta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Google review
+                </p>
+              </figure>
+            );
+          })}
+        </div>
+
+        <!-- Real platform logos (intake-confirmed profiles), driven by siteConfig.badges. -->
+        <div data-reveal class="mt-10 flex flex-col items-center gap-4">
+          <p class="text-base font-semibold uppercase tracking-wide text-brand/50">Reviewed on</p>
+          <ul class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            {siteConfig.badges.map((b) => {
+              const logo = LOGO_FILES[b];
+              return logo ? (
+                <li class="flex h-14 items-center justify-center rounded-xl bg-white px-5 shadow-sm ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+                  <img
+                    src={logo.file}
+                    alt={`Reviewed on ${b}`}
+                    width={logo.w}
+                    height={logo.h}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-8 w-auto"
+                  />
+                </li>
+              ) : (
+                <li class="flex h-14 items-center rounded-xl border border-brand/15 bg-white px-5 font-bold text-brand shadow-sm">{b}</li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div data-reveal class="mt-10 text-center">
           <a href="#lead-form"
-             class="inline-block rounded-xl bg-cta px-7 py-4 text-xl font-extrabold text-white shadow-lg hover:bg-cta-dark">
-            Get My Free Estimate
+             class={`inline-block rounded-xl bg-cta px-7 py-4 text-lg font-extrabold text-white shadow-lg hover:bg-cta-dark sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
           </a>
-          <p class="mt-3 text-base text-brand/70">{ctaMicrocopy}</p>
+          <p class="mt-3 text-sm text-brand/70">{ctaMicrocopy}</p>
         </div>
       </div>
     </section>
@@ -192,18 +448,18 @@ const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No
     <ProcessSteps heading="How your hardwood install works" steps={steps} />
 
     <!-- ===================== FINAL FORM ===================== -->
-    <section class="bg-brand-dark text-white">
-      <div class="mx-auto max-w-xl px-4 py-12">
-        <h2 class="text-center text-3xl font-extrabold">Ready for floors that last?</h2>
-        <p class="mt-2 text-center text-xl text-white/85">{offer}</p>
-        <div class="mt-6">
-          <LeadForm slug={SLUG} submitLabel="Get My Free Estimate" />
+    <section class="bg-gradient-to-br from-brand-dark via-brand-dark to-brand text-white">
+      <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
+        <h2 class="text-center text-3xl font-extrabold sm:text-4xl">Ready for floors that last?</h2>
+        <p class="mt-3 text-center text-xl text-white/85 sm:text-2xl">{offer}</p>
+        <div class="mt-7 overflow-hidden rounded-2xl border-t-4 border-gold shadow-2xl">
+          <LeadForm slug={SLUG} submitLabel="Get My Free Estimate" privacyNote={privacyNote} />
         </div>
-        <p class="mt-4 text-center text-lg">
+        <p class="mt-5 text-center text-xl">
           Prefer to talk?
-          <a href={telHref(phones.primary)} data-track-call class="font-extrabold text-gold underline">Call {phone}</a>
+          <a href={telHref(phones.primary)} data-track-call class="font-extrabold text-gold underline underline-offset-2 hover:text-gold/80">Call {phone}</a>
           or
-          <a href={smsHref(phones.primary)} data-track-sms class="font-extrabold text-gold underline">text us</a>.
+          <a href={smsHref(phones.primary)} data-track-sms class="font-extrabold text-gold underline underline-offset-2 hover:text-gold/80">text us</a>.
         </p>
       </div>
     </section>
@@ -215,8 +471,28 @@ const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No
 
 <script>
   import { trackConversion } from "@/lib/tracking";
+  import { initReveal } from "@/lib/reveal";
+
+  // Scroll-reveal (no-op under prefers-reduced-motion).
+  initReveal();
+
+  // tel: / sms: conversion tracking.
   document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) =>
     el.addEventListener("click", () => trackConversion("call")));
   document.querySelectorAll<HTMLAnchorElement>("[data-track-sms]").forEach((el) =>
     el.addEventListener("click", () => trackConversion("sms")));
+
+  // Species selector → pre-select the lead form's dropdown, then jump to it.
+  const select = document.querySelector<HTMLSelectElement>("[data-project-select]");
+  document.querySelectorAll<HTMLButtonElement>("[data-species]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const value = btn.dataset.species ?? "";
+      if (select && value) {
+        if (!Array.from(select.options).some((o) => o.value === value)) {
+          select.add(new Option(value, value));
+        }
+        select.value = value;
+      }
+      document.getElementById("lead-form")?.scrollIntoView({ behavior: "smooth" });
+    }));
 </script>
