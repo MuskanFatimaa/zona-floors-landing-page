@@ -1,0 +1,12 @@
+# Paid traffic only. Google Ads bots must be allowed explicitly because
+# AdsBot does not follow the wildcard rule; every other crawler is disallowed.
+# Pages also carry a meta robots noindex (see src/layouts/Layout.astro).
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
+User-agent: *
+Disallow: /

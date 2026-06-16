@@ -1,0 +1,39 @@
+---
+/**
+ * Slim header: logo, license number, click-to-call button (claude.md page anatomy #1).
+ * All facts come from siteConfig. The call button fires the 'call' conversion.
+ */
+import { siteConfig } from "@/lib/siteConfig";
+import { formatPhone, telHref } from "@/lib/phone";
+
+const { business, phones, brand } = siteConfig;
+const phone = formatPhone(phones.primary);
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-black/10 bg-white/95 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
+    <a href="/" class="flex items-center gap-2" aria-label={business.displayName}>
+      <img src={brand.logo} alt={`${business.displayName} logo`} class="h-10 w-auto" width="120" height="40" />
+    </a>
+
+    <div class="flex items-center gap-3">
+      <span class="hidden text-sm text-brand/70 sm:inline" data-license>
+        {business.license.number}
+      </span>
+      <a
+        href={telHref(phones.primary)}
+        data-track-call
+        class="rounded-lg bg-cta px-4 py-2 text-base font-bold text-white shadow-sm transition-colors hover:bg-cta-dark"
+      >
+        Call {phone}
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { trackConversion } from "@/lib/tracking";
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) => {
+    el.addEventListener("click", () => trackConversion("call"));
+  });
+</script>

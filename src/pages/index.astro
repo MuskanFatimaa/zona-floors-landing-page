@@ -1,17 +1,28 @@
 ---
-
+/**
+ * Scaffold placeholder home page. NOT a landing page (those are built per ad
+ * group in a later step). It exists so the layout, tracking, and chrome have a
+ * route to render against during development. noindex is applied by Layout.
+ */
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { siteConfig } from "@/lib/siteConfig";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title={`${siteConfig.business.displayName} — Scaffold`}>
+  <Header />
+  <main class="mx-auto max-w-3xl px-4 py-16">
+    <h1 class="text-3xl font-extrabold text-brand">{siteConfig.business.displayName}</h1>
+    <p class="mt-3 text-lg text-brand/80">
+      Project scaffold. Landing pages are built per ad group in a later step. This
+      route is for development only and is set to <code>noindex</code>.
+    </p>
+    <ul class="mt-6 list-disc space-y-1 pl-6 text-brand/80">
+      {siteConfig.services.map((s) => (
+        <li>{s.service} → <code>/{s.slug}</code> (not built yet)</li>
+      ))}
+    </ul>
+  </main>
+  <Footer />
+</Layout>

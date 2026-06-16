@@ -1,0 +1,222 @@
+---
+/**
+ * /wood-flooring — Hardwood Flooring Installation landing page (Google Ads).
+ *
+ * Message-matched to the hardwood ad group headlines: "Hardwood Flooring
+ * Experts", "Expert installation for solid and engineered hardwood floors",
+ * "Get a free project quote", "Licensed, insured, and locally owned in
+ * Arizona", "Expert Wood Floor Acclimation", "precision craftsmanship".
+ *
+ * Copy is a FIRST DRAFT for review (per the build gate). Items still pending
+ * client confirmation are noted in the handoff, not invented here:
+ *   - exact offer wording (free in-home estimate — ad-supported, flagged)
+ *   - speed-to-lead promise (NOT claimed; intake hasn't supplied one)
+ *   - verbatim Google review text (shown as attributed summaries for now)
+ *   - aggregate rating + count (shown qualitatively as "5-Star Rated on Google")
+ */
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import StickyMobileBar from "@/components/StickyMobileBar.astro";
+import LeadForm from "@/components/LeadForm.astro";
+import ProcessSteps from "@/components/ProcessSteps.astro";
+import ProblemSolution from "@/components/ProblemSolution.astro";
+import ProjectGallery from "@/components/ProjectGallery.astro";
+import { siteConfig, approvedOffers } from "@/lib/siteConfig";
+import { formatPhone, telHref, smsHref } from "@/lib/phone";
+
+const SLUG = "wood-flooring";
+const { phones, photos, business } = siteConfig;
+const phone = formatPhone(phones.primary);
+const offer = approvedOffers()[0]?.text ?? "";
+
+const metro = "Phoenix & the East Valley";
+
+// Largest pain point first (rule #11): desert-climate plank failure.
+const problems = [
+  {
+    problem: "Floors that gap, cup, and squeak within a year",
+    solution:
+      "Arizona's dry heat wrecks rushed installs. We acclimate every plank in your home for 3–7 days so the wood matches your indoor humidity before a single board is nailed — so it stays flat and gap-free.",
+  },
+  {
+    problem: "Concrete slabs that trap moisture",
+    solution:
+      "Most Valley homes sit on slab. We meter subfloor and slab moisture before we start and install the right vapor barrier, so moisture never pushes up and ruins your floor.",
+  },
+  {
+    problem: "Wavy subfloors that make planks rock and creak",
+    solution:
+      "We flatten the subfloor to spec before laying a board. Tight seams, no rocking, no hollow spots underfoot.",
+  },
+  {
+    problem: "Solid vs. engineered — the wrong pick for your home",
+    solution:
+      "We walk you through solid and engineered hardwood for your subfloor, rooms, and budget, so you buy the floor that lasts in your home — not an upsell.",
+  },
+];
+
+const steps = [
+  { title: "Free in-home estimate", body: "We measure, talk through solid vs. engineered, and give you a clear written quote. No pressure, no obligation." },
+  { title: "Prep & acclimate", body: "We test moisture, flatten the subfloor, and let your hardwood acclimate to your home so it won't gap or cup later." },
+  { title: "Precision install & walkthrough", body: "Tight seams, clean transitions, expansion gaps hidden under trim — then we walk the finished floor with you." },
+];
+
+const galleryPhotos = [
+  { src: photos.hardwood[0], label: "Recent hardwood installation" },
+  { src: photos.hardwood[1], label: "Engineered hardwood, open living area" },
+  { src: photos.hardwood[2], label: "Tight seams and clean plank transitions" },
+  { src: photos.hardwood[3], label: "Wide-plank wood flooring" },
+  { src: photos.hardwood[4], label: "Hardwood throughout the main floor" },
+];
+
+// Social proof — hardwood + general reviewers, attributed summaries (NOT
+// presented as verbatim quotes). Swap in real Google review text before launch.
+const proof = [
+  { name: "Brennen M.", note: "Two-bath remodel finished with stunning hardwood floors. Crew: Abraham & Rey." },
+  { name: "Lynn H.", note: "Whole-house project — the floors look like they've always been part of the home." },
+  { name: "Jim S.", note: "Full-home demo and new floors completed in just a few days." },
+  { name: "Brandon M.", note: "Quality workmanship, courtesy, and a fair price — would easily use them again." },
+];
+
+const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No obligation`;
+---
+
+<Layout
+  title="Hardwood Floor Installation in Phoenix & the East Valley | Zona Floors"
+  description="Expert solid & engineered hardwood floor installation. Licensed, insured, locally-owned Arizona crew. Free in-home estimate — call or request a quote."
+>
+  <Header />
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="bg-brand text-white">
+      <div class="mx-auto max-w-6xl px-4 pb-6 pt-4">
+        <p class="flex items-center gap-2 whitespace-nowrap text-base font-semibold">
+          <span class="text-gold" aria-hidden="true">★★★★★</span>
+          <span>5-Star Rated on Google</span>
+        </p>
+
+        <h1 class="mt-2 text-3xl font-extrabold leading-[1.05] sm:text-4xl lg:text-5xl">
+          Hardwood Floor Installation in {metro}
+        </h1>
+        <p class="mt-2 text-base font-medium text-white/90 sm:text-lg">
+          Solid &amp; engineered hardwood, installed by a licensed Arizona crew — built to
+          stay flat and gap-free in our dry desert air.
+        </p>
+
+        <p class="mt-3 inline-block rounded-lg bg-gold px-4 py-2 text-lg font-extrabold text-brand-dark">
+          {offer}
+        </p>
+
+        <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+          <a href="#lead-form"
+             class="rounded-xl bg-cta px-6 py-3.5 text-center text-lg font-extrabold text-white shadow-lg transition-colors hover:bg-cta-dark">
+            Get My Free Estimate
+          </a>
+          <a href={telHref(phones.primary)} data-track-call
+             class="rounded-xl border-2 border-white px-6 py-3.5 text-center text-lg font-extrabold text-white">
+            Call {phone}
+          </a>
+        </div>
+        <p class="mt-2 text-sm text-white/75">{ctaMicrocopy}</p>
+      </div>
+    </section>
+
+    <!-- ===================== PRIMARY LEAD FORM ===================== -->
+    <section id="lead-form" class="bg-brand-dark">
+      <div class="mx-auto max-w-xl px-4 py-10">
+        <LeadForm slug={SLUG} heading="Get your free hardwood estimate" submitLabel="Get My Free Estimate" />
+      </div>
+    </section>
+
+    <!-- ===================== TRUST ROW ===================== -->
+    <section class="border-b border-black/10 bg-white">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 py-4 text-center text-lg font-semibold text-brand">
+        <span><span class="text-gold" aria-hidden="true">★★★★★</span> 5-Star on Google</span>
+        <span aria-hidden="true" class="text-brand/30">•</span>
+        <span data-license>Licensed &amp; Insured · {business.license.number}</span>
+        <span aria-hidden="true" class="text-brand/30">•</span>
+        <span>Locally Owned in Arizona</span>
+      </div>
+    </section>
+
+    <!-- ===================== OFFER BLOCK ===================== -->
+    <section class="bg-cta text-white">
+      <div class="mx-auto max-w-4xl px-4 py-10 text-center">
+        <p class="text-3xl font-extrabold">{offer}</p>
+        <p class="mt-2 text-xl text-white/90">
+          A real quote from a licensed crew — solid or engineered, priced for your home.
+        </p>
+        <a href="#lead-form"
+           class="mt-5 inline-block rounded-xl bg-white px-7 py-4 text-xl font-extrabold text-cta shadow-lg">
+          Book My Free Estimate
+        </a>
+        <p class="mt-3 text-base text-white/80">Takes about a minute · No obligation</p>
+      </div>
+    </section>
+
+    <!-- ===================== PROBLEM / SOLUTION ===================== -->
+    <ProblemSolution
+      heading="Why hardwood fails in Arizona — and how we prevent it"
+      items={problems}
+    />
+
+    <!-- ===================== GALLERY ===================== -->
+    <ProjectGallery heading="Recent hardwood projects" photos={galleryPhotos} />
+
+    <!-- ===================== SOCIAL PROOF ===================== -->
+    <section class="bg-brand/5">
+      <div class="mx-auto max-w-6xl px-4 py-12">
+        <h2 class="text-center text-3xl font-extrabold text-brand">Neighbors across the Valley trust Zona Floors</h2>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {proof.map((p) => (
+            <figure class="flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+              <div class="text-gold" aria-hidden="true">★★★★★</div>
+              <p class="mt-2 grow text-lg text-ink">{p.note}</p>
+              <figcaption class="mt-3 font-bold text-brand/80">— {p.name} · Google review</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="mt-8 text-center">
+          <a href="#lead-form"
+             class="inline-block rounded-xl bg-cta px-7 py-4 text-xl font-extrabold text-white shadow-lg hover:bg-cta-dark">
+            Get My Free Estimate
+          </a>
+          <p class="mt-3 text-base text-brand/70">{ctaMicrocopy}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROCESS ===================== -->
+    <ProcessSteps heading="How your hardwood install works" steps={steps} />
+
+    <!-- ===================== FINAL FORM ===================== -->
+    <section class="bg-brand-dark text-white">
+      <div class="mx-auto max-w-xl px-4 py-12">
+        <h2 class="text-center text-3xl font-extrabold">Ready for floors that last?</h2>
+        <p class="mt-2 text-center text-xl text-white/85">{offer}</p>
+        <div class="mt-6">
+          <LeadForm slug={SLUG} submitLabel="Get My Free Estimate" />
+        </div>
+        <p class="mt-4 text-center text-lg">
+          Prefer to talk?
+          <a href={telHref(phones.primary)} data-track-call class="font-extrabold text-gold underline">Call {phone}</a>
+          or
+          <a href={smsHref(phones.primary)} data-track-sms class="font-extrabold text-gold underline">text us</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <StickyMobileBar />
+</Layout>
+
+<script>
+  import { trackConversion } from "@/lib/tracking";
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("call")));
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-sms]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("sms")));
+</script>

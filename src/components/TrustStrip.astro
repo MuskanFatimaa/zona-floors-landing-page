@@ -1,0 +1,32 @@
+---
+/**
+ * TrustStrip — aggregate rating + count, real platform badges, licensed/insured
+ * line (claude.md page anatomy #3). Rating/count come from siteConfig and are
+ * never fabricated; the rating block only renders once real numbers exist.
+ */
+import { siteConfig } from "@/lib/siteConfig";
+
+const { reviews, badges, business } = siteConfig;
+const { rating, count, platform } = reviews.aggregate;
+const hasAggregate = typeof rating === "number" && typeof count === "number";
+---
+
+<section class="border-y border-black/10 bg-brand/5">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
+    {hasAggregate && (
+      <div class="flex items-center gap-2">
+        <span class="text-xl font-extrabold text-brand">{rating!.toFixed(1)}</span>
+        <span aria-hidden="true" class="text-cta">★★★★★</span>
+        <span class="text-brand/70">{count} {platform} reviews</span>
+      </div>
+    )}
+
+    <p class="font-semibold text-brand">
+      Licensed &amp; Insured · <span data-license>{business.license.number}</span>
+    </p>
+
+    <ul class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-brand/70">
+      {badges.map((b) => <li class="font-medium">{b}</li>)}
+    </ul>
+  </div>
+</section>

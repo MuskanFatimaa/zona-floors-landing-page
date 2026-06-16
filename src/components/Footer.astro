@@ -1,0 +1,51 @@
+---
+/**
+ * Footer: NAP, license, privacy + terms links (claude.md page anatomy #9).
+ */
+import { siteConfig } from "@/lib/siteConfig";
+import { formatPhone, telHref } from "@/lib/phone";
+
+const { business, phones } = siteConfig;
+const { address } = business;
+const phone = formatPhone(phones.primary);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-black/10 bg-brand text-white">
+  <div class="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:grid-cols-3">
+    <div>
+      <p class="text-lg font-bold">{business.displayName}</p>
+      <address class="mt-2 not-italic text-white/80">
+        {address.street}<br />
+        {address.city}, {address.state} {address.zip}
+      </address>
+      <p class="mt-2">
+        <a href={telHref(phones.primary)} class="font-semibold underline">{phone}</a>
+      </p>
+    </div>
+
+    <div>
+      <p class="font-semibold">Licensed &amp; Insured</p>
+      <p class="mt-2 text-white/80" data-license>
+        {business.license.number}
+      </p>
+      <p class="text-white/80">{business.license.issuingBody}</p>
+      {business.hours && <p class="mt-2 text-white/80">{business.hours}</p>}
+    </div>
+
+    <div>
+      <p class="font-semibold">Service Area</p>
+      <p class="mt-2 text-white/80">{siteConfig.serviceArea.join(" · ")}</p>
+    </div>
+  </div>
+
+  <div class="border-t border-white/15">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-4 text-sm text-white/70 sm:flex-row">
+      <p>© {year} {business.legalName}. All rights reserved.</p>
+      <nav class="flex gap-4">
+        <a href="/privacy" class="underline">Privacy Policy</a>
+        <a href="/terms" class="underline">Terms</a>
+      </nav>
+    </div>
+  </div>
+</footer>

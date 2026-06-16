@@ -1,0 +1,52 @@
+---
+/**
+ * StickyMobileBar — call + text buttons fixed to the bottom on mobile,
+ * revealed after the user scrolls past the hero (claude.md page anatomy #10).
+ * Fires the 'call' / 'sms' conversions.
+ */
+import { siteConfig } from "@/lib/siteConfig";
+import { formatPhone, telHref, smsHref } from "@/lib/phone";
+
+const { phones } = siteConfig;
+const phone = formatPhone(phones.primary);
+---
+
+<div
+  data-sticky-bar
+  class="fixed inset-x-0 bottom-0 z-50 grid translate-y-full grid-cols-2 gap-px bg-black/10 shadow-[0_-4px_16px_rgba(0,0,0,0.15)] transition-transform duration-200 sm:hidden"
+>
+  <a
+    href={telHref(phones.primary)}
+    data-track-call
+    class="flex items-center justify-center gap-2 bg-cta px-4 py-4 text-lg font-extrabold text-white"
+  >
+    Call Now
+  </a>
+  <a
+    href={smsHref(phones.primary)}
+    data-track-sms
+    class="flex items-center justify-center gap-2 bg-brand px-4 py-4 text-lg font-extrabold text-white"
+  >
+    Text Us
+  </a>
+</div>
+
+<script>
+  import { trackConversion } from "@/lib/tracking";
+
+  const bar = document.querySelector<HTMLElement>("[data-sticky-bar]");
+  const reveal = () => {
+    if (!bar) return;
+    const past = window.scrollY > Math.min(window.innerHeight, 600);
+    bar.style.transform = past ? "translateY(0)" : "translateY(100%)";
+  };
+  window.addEventListener("scroll", reveal, { passive: true });
+  reveal();
+
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("call")),
+  );
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-sms]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("sms")),
+  );
+</script>

@@ -1,0 +1,30 @@
+---
+/**
+ * ProblemSolution — 2-4 concrete pain points paired with specific craft
+ * solutions (claude.md page anatomy #6). No generic filler: content is passed
+ * in per page from real intake facts.
+ */
+interface Item {
+  problem: string;
+  solution: string;
+}
+interface Props {
+  items: Item[];
+  heading?: string;
+}
+const { items, heading } = Astro.props;
+---
+
+<section class="bg-brand/5">
+  <div class="mx-auto max-w-6xl px-4 py-12">
+    {heading && <h2 class="text-center text-3xl font-extrabold text-brand">{heading}</h2>}
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      {items.map((item) => (
+        <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
+          <p class="font-bold text-cta">{item.problem}</p>
+          <p class="mt-2 text-lg text-brand/90">{item.solution}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

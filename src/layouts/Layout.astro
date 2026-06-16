@@ -1,0 +1,112 @@
+---
+/**
+ * Root layout. Every page renders through it, so it is the single place for:
+ *  - the build-time config gate (assertConfig)
+ *  - meta robots noindex on every page (claude.md #4)
+ *  - gtag (Google Ads) + Microsoft Clarity, fed from siteConfig
+ *  - LocalBusiness JSON-LD, fed from siteConfig
+ *  - first-touch attribution capture (client island)
+ */
+import "../styles/global.css";
+import { siteConfig } from "@/lib/siteConfig";
+import { assertConfig } from "@/lib/config-assert";
+import { formatPhone, telHref } from "@/lib/phone";
+
+// Build-time gate: throws during `astro build` if required intake data is missing.
+assertConfig();
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "" } = Astro.props;
+
+const { tracking, business, phones, brand, domain } = siteConfig;
+const adsId = tracking.googleAds.conversionId.trim();
+const clarityId = tracking.clarityId.trim();
+const canonical = domain ? `https://${domain}${Astro.url.pathname}` : undefined;
+
+// LocalBusiness JSON-LD — only includes facts we actually have (never fabricated).
+const jsonLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "HomeAndConstructionBusiness",
+  name: business.displayName,
+  telephone: formatPhone(phones.primary),
+  image: brand.logo,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: business.address.street,
+    addressLocality: business.address.city,
+    addressRegion: business.address.state,
+    postalCode: business.address.zip,
+    addressCountry: "US",
+  },
+  areaServed: siteConfig.serviceArea,
+};
+if (domain) jsonLd.url = `https://${domain}`;
+if (
+  typeof siteConfig.reviews.aggregate.rating === "number" &&
+  typeof siteConfig.reviews.aggregate.count === "number"
+) {
+  jsonLd.aggregateRating = {
+    "@type": "AggregateRating",
+    ratingValue: siteConfig.reviews.aggregate.rating,
+    reviewCount: siteConfig.reviews.aggregate.count,
+  };
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- claude.md #4: every page is noindex (paid traffic only). -->
+    <meta name="robots" content="noindex, nofollow" />
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Ads (gtag). Only loaded once a conversion ID is configured. -->
+    {adsId && (
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`}></script>
+    )}
+    <script is:inline define:vars={{ adsId, labels: tracking.googleAds.labels }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag("js", new Date());
+      if (adsId) gtag("config", adsId);
+      // Tracking IDs for the client conversion helper (no full config in the bundle).
+      window.__ZF_TRACKING = { conversionId: adsId, labels };
+    </script>
+
+    <!-- Microsoft Clarity, kept on all pages. -->
+    {clarityId && (
+      <script is:inline define:vars={{ clarityId }}>
+        (function (c, l, a, r, i, t, y) {
+          c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+          t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+          y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", clarityId);
+      </script>
+    )}
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <slot />
+
+    <!-- First-touch attribution capture, site-wide. -->
+    <script>
+      import { captureClickIds } from "@/lib/tracking";
+      captureClickIds();
+    </script>
+  </body>
+</html>

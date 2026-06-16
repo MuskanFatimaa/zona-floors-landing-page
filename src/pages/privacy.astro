@@ -1,0 +1,62 @@
+---
+/**
+ * /privacy — baseline privacy policy for a lead-gen site (NAP from config).
+ * NOTE: have the client's counsel review before launch; SMS/TCPA specifics must
+ * match the approved consent language in siteConfig.consent.sms.
+ */
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { siteConfig } from "@/lib/siteConfig";
+import { formatPhone } from "@/lib/phone";
+
+const { business } = siteConfig;
+const { address } = business;
+const phone = formatPhone(siteConfig.phones.primary);
+const effective = new Date().toISOString().slice(0, 10);
+---
+
+<Layout title={`Privacy Policy — ${business.displayName}`}>
+  <Header />
+  <main class="mx-auto max-w-3xl px-4 py-12 text-brand/90">
+    <h1 class="text-3xl font-extrabold text-brand">Privacy Policy</h1>
+    <p class="mt-2 text-sm text-brand/60">Effective {effective}</p>
+
+    <div class="mt-6 space-y-5 text-lg leading-relaxed">
+      <p>
+        This policy explains how {business.legalName} (“we,” “us”) collects and uses
+        information when you contact us through this website.
+      </p>
+
+      <h2 class="text-2xl font-bold text-brand">Information we collect</h2>
+      <p>
+        When you submit our quote form, we collect the name, phone number, and ZIP
+        code you provide. We also record marketing attribution data (such as the page
+        you arrived on and advertising click identifiers) to understand which ads
+        drive inquiries.
+      </p>
+
+      <h2 class="text-2xl font-bold text-brand">How we use it</h2>
+      <p>
+        We use your information solely to respond to your request, schedule estimates,
+        and provide the flooring services you ask about. We do not sell your personal
+        information.
+      </p>
+
+      <h2 class="text-2xl font-bold text-brand">Calls and text messages</h2>
+      <p>
+        By providing your phone number you agree that we may contact you by phone and
+        text message about your inquiry. Message and data rates may apply. You can opt
+        out of text messages at any time by replying STOP.
+      </p>
+
+      <h2 class="text-2xl font-bold text-brand">Contact</h2>
+      <p>
+        {business.displayName}<br />
+        {address.street}, {address.city}, {address.state} {address.zip}<br />
+        {phone}
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Layout>

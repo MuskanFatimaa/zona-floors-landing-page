@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/*
+ * Brand theme — derived from the Zona Floors logo (Arizona state-flag identity:
+ * blue mountains, red/gold rays, black base, copper star).
+ *
+ * --color-brand / --color-cta are kept in sync with siteConfig.brand
+ * (primaryHex / ctaHex).
+ */
+@theme {
+  --color-brand: #194b86;       /* mountain blue — structure, headings (= primaryHex) */
+  --color-brand-dark: #0c2e52;  /* deep blue — footer, dark sections */
+  --color-cta: #ce1126;         /* Arizona-flag red — calls to action (= ctaHex) */
+  --color-cta-dark: #a30e1e;    /* pressed/hover CTA */
+  --color-gold: #f4b41a;        /* flag-ray gold — star ratings, accents */
+  --color-ink: #15233a;         /* body text — near-black with a blue cast */
+
+  /* Build preference (intake): Extra Large type, mobile-first. */
+  --text-base: 1.1875rem;       /* 19px */
+  --text-lg: 1.375rem;          /* 22px */
+  --text-xl: 1.75rem;           /* 28px */
+  --text-2xl: 2.125rem;         /* 34px */
+  --text-3xl: 2.625rem;         /* 42px */
+  --text-4xl: 3.25rem;          /* 52px */
+  --text-5xl: 3.75rem;          /* 60px */
+}
+
+:root {
+  font-size: 19px; /* Extra Large base — scale the whole type system up */
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--color-ink);
+}
+
+/* Visually-hidden honeypot field (LeadForm). Not display:none — bots skip those. */
+.zf-hp {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

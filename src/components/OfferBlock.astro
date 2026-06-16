@@ -1,0 +1,57 @@
+---
+/**
+ * OfferBlock — states the approved intake offer(s) plainly with its own CTA
+ * (claude.md page anatomy #4). Only APPROVED offers render. If none are
+ * approved yet, the production build has already failed via config-assert; in
+ * dev this renders a visible placeholder so the gap is obvious.
+ */
+import { siteConfig, approvedOffers } from "@/lib/siteConfig";
+import { formatPhone, telHref } from "@/lib/phone";
+
+interface Props {
+  /** Anchor target for the form CTA on the page. */
+  formHref?: string;
+}
+const { formHref = "#lead-form" } = Astro.props;
+const offers = approvedOffers();
+const phone = formatPhone(siteConfig.phones.primary);
+---
+
+<section class="bg-cta text-white">
+  <div class="mx-auto max-w-6xl px-4 py-8 text-center">
+    {offers.length > 0 ? (
+      <ul class="mx-auto flex max-w-3xl flex-col gap-2">
+        {offers.map((o) => (
+          <li class="text-2xl font-extrabold">{o.text}</li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-xl font-bold opacity-90">
+        [Offer REQUIRED — no approved offer in siteConfig.offers. Page will not ship.]
+      </p>
+    )}
+
+    <div class="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a
+        href={formHref}
+        class="rounded-lg bg-white px-6 py-3 text-lg font-extrabold text-cta shadow-sm"
+      >
+        Get My Free Quote
+      </a>
+      <a
+        href={telHref(siteConfig.phones.primary)}
+        data-track-call
+        class="rounded-lg border-2 border-white px-6 py-3 text-lg font-extrabold text-white"
+      >
+        Call {phone}
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { trackConversion } from "@/lib/tracking";
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("call")),
+  );
+</script>

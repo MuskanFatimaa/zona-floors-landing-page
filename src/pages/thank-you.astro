@@ -1,0 +1,102 @@
+---
+/**
+ * /thank-you (claude.md "Conversion tracking"):
+ *  - Real route; fires the form conversion exactly once (sessionStorage guard).
+ *  - Restates the speed-to-lead promise (from intake).
+ *  - Asks 1-2 OPTIONAL qualifying questions that post as a CRM contact update.
+ *  - Never a dead end: call + text CTAs remain.
+ */
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { siteConfig } from "@/lib/siteConfig";
+import { ATTRIBUTION_PARAMS } from "@/lib/tracking";
+import { formatPhone, telHref, smsHref } from "@/lib/phone";
+
+const { business, phones, speedToLead } = siteConfig;
+const phone = formatPhone(phones.primary);
+---
+
+<Layout title={`Thank You — ${business.displayName}`}>
+  <Header />
+
+  <main class="mx-auto max-w-2xl px-4 py-12 text-center">
+    <h1 class="text-3xl font-extrabold text-brand">Thank you — we got your request.</h1>
+
+    <p class="mt-4 text-xl text-brand/80">
+      {speedToLead || "[Speed-to-lead promise REQUIRED — supply siteConfig.speedToLead]"}
+    </p>
+
+    <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href={telHref(phones.primary)} data-track-call
+         class="rounded-lg bg-cta px-6 py-3 text-lg font-extrabold text-white">
+        Call {phone}
+      </a>
+      <a href={smsHref(phones.primary)} data-track-sms
+         class="rounded-lg border-2 border-cta px-6 py-3 text-lg font-extrabold text-cta">
+        Text Us
+      </a>
+    </div>
+
+    <!-- Optional qualifiers — post as a contact update, not a new lead. -->
+    <form method="POST" action="/api/submit-lead" data-qualify-form
+          class="mt-10 rounded-2xl bg-white p-5 text-left shadow-lg ring-1 ring-black/5">
+      <h2 class="text-xl font-bold text-brand">Help us prep your quote (optional)</h2>
+      <input type="hidden" name="intent" value="qualify" />
+      <input type="hidden" name="page_slug" value="thank-you" />
+      {ATTRIBUTION_PARAMS.map((p) => <input type="hidden" name={p} data-attr={p} value="" />)}
+
+      <div class="mt-4 grid gap-4 sm:grid-cols-3">
+        <label class="block">
+          <span class="mb-1 block font-semibold text-brand">Rooms</span>
+          <input type="text" name="rooms" inputmode="numeric"
+                 class="w-full rounded-lg border border-black/20 px-3 py-2 text-lg" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block font-semibold text-brand">Approx. sq ft</span>
+          <input type="text" name="sqft" inputmode="numeric"
+                 class="w-full rounded-lg border border-black/20 px-3 py-2 text-lg" />
+        </label>
+        <label class="block">
+          <span class="mb-1 block font-semibold text-brand">Timeline</span>
+          <select name="timeline" class="w-full rounded-lg border border-black/20 px-3 py-2 text-lg">
+            <option value="">Select…</option>
+            <option value="asap">ASAP</option>
+            <option value="1-3-months">1–3 months</option>
+            <option value="just-researching">Just researching</option>
+          </select>
+        </label>
+      </div>
+
+      <button type="submit"
+              class="mt-4 w-full rounded-lg bg-brand px-5 py-3 text-lg font-extrabold text-white">
+        Send details
+      </button>
+    </form>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { captureClickIds, getAttribution, trackConversion } from "@/lib/tracking";
+
+  // Fire the form conversion exactly once per session arrival.
+  if (!sessionStorage.getItem("zf_form_converted")) {
+    trackConversion("form");
+    try { sessionStorage.setItem("zf_form_converted", "1"); } catch {}
+  }
+
+  // Fill attribution on the qualifier form so the CRM can match the contact.
+  captureClickIds();
+  const attr = getAttribution();
+  document.querySelectorAll<HTMLInputElement>("[data-attr]").forEach((input) => {
+    const key = input.dataset.attr as keyof typeof attr;
+    if (key && attr[key]) input.value = attr[key] as string;
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("call")));
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-sms]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("sms")));
+</script>
