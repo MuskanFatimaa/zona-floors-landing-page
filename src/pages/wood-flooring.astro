@@ -44,11 +44,11 @@ const heroImg = photos.hardwood[4];
 // square sales graphic with a baked-in "Get Free Quote" CTA; rendered as a
 // clickable CreativeBanner that jumps to the lead form so it actually converts.
 const creatives = {
-  sales:     { src: "/creatives/c5.jpg", alt: "Before and after: new wood floors in about 3 days, 4.9-star rated, installed from $2.40 per sq ft" },
   pricing:   { src: "/creatives/c1.jpg", alt: "Zona Floors hardwood with honest up-front pricing: the price we quote is the price you pay" },
   financing: { src: "/creatives/c2.jpg", alt: "New floors with 0% interest financing for 12 months, before and after" },
   speed:     { src: "/creatives/c3.jpg", alt: "From demo to done in 3 days: fast, clean, professional hardwood floor installation" },
   trust:     { src: "/creatives/c4.jpg", alt: "Local Phoenix Valley flooring contractors: real work, real accountability" },
+  promo:     { src: "/creatives/c5.jpg", alt: "New hardwood floors in 3 days, with 10% off for veterans and seniors. Book a free estimate today." },
 };
 
 // Real intake photo for the asymmetric split feature.
@@ -440,6 +440,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </div>
       </section>
     )}
+
+    <!-- ===================== PROMO CREATIVE (3 days + veterans) ===================== -->
+    <CreativeBanner src={creatives.promo.src} alt={creatives.promo.alt} bg="bg-brand/5" />
 
     <!-- ===================== TEAM AT WORK ===================== -->
     <section class="bg-gradient-to-b from-brand to-brand-dark text-white">
