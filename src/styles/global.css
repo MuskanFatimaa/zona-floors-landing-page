@@ -5,9 +5,10 @@
    DM Sans for body. */
 @import "@fontsource-variable/dm-sans/index.css";
 @import "@fontsource-variable/fraunces/index.css";
-/* Sora — geometric/modern display face used to give the tile page its own
-   identity (see .tile-theme below), distinct from the wood page's serif. */
-@import "@fontsource-variable/sora/index.css";
+/* Tile page identity (see .tile-theme below): Bricolage Grotesque display +
+   Plus Jakarta Sans body — distinct from the wood page's Fraunces/DM Sans. */
+@import "@fontsource-variable/bricolage-grotesque/index.css";
+@import "@fontsource-variable/plus-jakarta-sans/index.css";
 
 /*
  * Brand theme — derived from the Zona Floors logo (Arizona state-flag identity:
@@ -76,6 +77,12 @@ h3 {
 /* Legibility for light text over photos (hero) without a heavy flat overlay. */
 .text-shadow-strong {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Light halo for DARK text over a bright photo — keeps copy legible without
+   putting any darkening overlay on the image itself. */
+.text-shadow-glow {
+  text-shadow: 0 1px 16px rgba(255, 255, 255, 0.95), 0 0 5px rgba(255, 255, 255, 0.95);
 }
 
 /* Visually-hidden honeypot field (LeadForm). Not display:none — bots skip those. */
@@ -154,29 +161,30 @@ h3 {
 /*
  * TILE PAGE THEME — scoped to .tile-theme (the /tile-flooring <main>) so the
  * wood page is untouched. Same FloorDaddy energy, different visual identity:
- *   - Headings in Sora (geometric/modern) instead of Fraunces (serif).
+ *   - Bricolage Grotesque headings + Plus Jakarta Sans body (vs the wood serif).
  *   - Crisper, more "architectural" corners (tile = grid/geometry).
- *   - Section accent bars become a gold->red gradient instead of flat gold.
+ *   - Cohesive palette: deep blue + neon pink/magenta + gold (red folded into
+ *     the pink family so nothing clashes).
  * Scoped overrides win on specificity (.tile-theme .x = 0,2,0 > .x = 0,1,0).
  */
+.tile-theme {
+  /* Redefining these CSS vars cascades to every bg-pop/bg-cta/text-brand utility. */
+  --color-pop: #ff2e93;        /* bright neon pink — small accents, CTAs */
+  --color-cta: #d61f7a;        /* deep magenta — large fills / sections (was red) */
+  --color-cta-dark: #ab1561;
+  --color-brand: #0f3d6b;      /* deep blue — structure/headings */
+  --color-brand-dark: #06203a; /* deep navy — dark sections */
+  font-family: "Plus Jakarta Sans Variable", var(--font-sans);
+}
 .tile-theme h1,
 .tile-theme h2,
 .tile-theme h3 {
-  font-family: "Sora Variable", var(--font-sans);
-  letter-spacing: -0.03em;
+  font-family: "Bricolage Grotesque Variable", "Plus Jakarta Sans Variable", sans-serif;
+  letter-spacing: -0.02em;
 }
 .tile-theme .rounded-3xl { border-radius: 0.625rem; }
 .tile-theme .rounded-2xl { border-radius: 0.5rem; }
 .tile-theme .rounded-xl  { border-radius: 0.375rem; }
-
-/* Color shift (same AZ palette, different emphasis): deeper blue + a neon-PINK
-   eye-catch that replaces the wood page's electric lime. Redefining the CSS vars
-   on .tile-theme cascades to every bg-pop/text-brand/etc. utility on the page. */
-.tile-theme {
-  --color-pop: #ff2e93;        /* neon pink — accents, badges, primary fills */
-  --color-brand: #103a66;      /* deeper, richer blue */
-  --color-brand-dark: #06203a; /* deeper navy for dark sections */
-}
 
 /* Flat gold underline accents -> gold→pink gradient, a touch bolder. */
 .tile-theme .h-1.bg-gold {

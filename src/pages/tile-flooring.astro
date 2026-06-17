@@ -16,6 +16,7 @@ import StickyMobileBar from "@/components/StickyMobileBar.astro";
 import LeadForm from "@/components/LeadForm.astro";
 import ProcessSteps from "@/components/ProcessSteps.astro";
 import Guarantees from "@/components/Guarantees.astro";
+import CreativeBanner from "@/components/CreativeBanner.astro";
 import { siteConfig, approvedOffers, approvedGuarantees, readyReviews } from "@/lib/siteConfig";
 import { formatPhone, telHref, smsHref } from "@/lib/phone";
 
@@ -25,6 +26,26 @@ const phone = formatPhone(phones.primary);
 const offer = approvedOffers()[0]?.text ?? "";
 
 const metro = "Phoenix & the East Valley";
+
+// Client-branded tile promo creatives (self-hosted under /public/creatives/tile).
+// Distributed across the page at relevant points (not all in one wall).
+const creatives = {
+  patterned:  { src: "/creatives/tile/tile-2.jpg", alt: "Interest-free for 12 months on patterned tile floors, with 10% off for veterans." },
+  financing:  { src: "/creatives/tile/tile-5.jpg", alt: "0% financing for 12 months on new tile floors, plus 10% off for veterans and seniors." },
+  discount:   { src: "/creatives/tile/tile-3.jpg", alt: "Senior discounts on all flooring jobs, plus a thank-you discount for veterans." },
+  speed:      { src: "/creatives/tile/tile-6.jpg", alt: "New tile floors in 3 days, with 10% off for veterans and seniors. Book a free estimate." },
+  noInterest: { src: "/creatives/tile/tile-4.jpg", alt: "Upgrade your tile with no interest for a year, plus 10% off for veterans." },
+  install:    { src: "/creatives/tile/tile-1.jpg", alt: "Interest-free for 12 months, with 10% off for veterans. Book a free estimate." },
+};
+
+// FAQ — lead-friction reducers, written from approved intake facts only.
+const faqs = [
+  { q: "How much does tile installation cost?", a: "Every home is different, so you get a clear written price during a free in-home estimate — honest up-front pricing, plus a price-match guarantee. The estimate is the price." },
+  { q: "How long does a tile floor take?", a: "Most projects are completed in just 3 to 7 days, depending on size and prep. You'll get a firm timeline with your written quote." },
+  { q: "Do you offer financing?", a: "Yes — ask us about 0% financing for qualified buyers. Veterans, active military, seniors, and first responders also save 10%." },
+  { q: "Are you licensed and insured?", a: "Yes. We're a licensed Arizona contractor (AZ ROC #336899), locally owned, with our own installers on every job — never day-labor subs." },
+  { q: "Will my grout crack down the line?", a: "Not when it's prepped right. We level the subfloor and waterproof wet areas first, then set the tile lippage-free with leveling clips and seal the grout." },
+];
 
 // Three short guarantee callouts for the hero (FloorDaddy-style checkmark row).
 const heroGuarantees = approvedGuarantees().filter((g) =>
@@ -97,14 +118,30 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
   <Header />
 
   <main class="tile-theme">
-    <!-- ===================== HERO (centered, trust-driven, mosaic) ===================== -->
-    <section class="relative isolate overflow-hidden bg-gradient-to-b from-white via-brand/5 to-white">
-      <!-- Faint grout-grid texture + neon glow blobs. -->
-      <div class="tile-grout pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
-      <span class="pointer-events-none absolute -left-24 top-10 -z-10 h-72 w-72 rounded-full bg-pop/15 blur-3xl" aria-hidden="true"></span>
-      <span class="pointer-events-none absolute -right-20 top-40 -z-10 h-80 w-80 rounded-full bg-brand/15 blur-3xl" aria-hidden="true"></span>
+    <!-- ===================== URGENCY OFFER RIBBON ===================== -->
+    <a href="#lead-form" class="group block bg-brand-dark text-white">
+      <p class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-0.5 px-5 py-2 text-center text-sm font-extrabold uppercase tracking-wide sm:text-base">
+        <span class="animate-pulse" aria-hidden="true">🔥</span>
+        <span class="text-pop">Limited time:</span>
+        <span>0% financing for 12 months + 10% off veterans &amp; seniors</span>
+        <span class="font-black text-gold underline decoration-2 underline-offset-2 transition group-hover:no-underline">Book now →</span>
+      </p>
+    </a>
 
-      <div class="mx-auto max-w-3xl px-5 pb-10 pt-8 text-center sm:pt-12">
+    <!-- ===================== HERO (centered, trust-driven, mosaic) ===================== -->
+    <section class="relative isolate overflow-hidden text-brand">
+      <!-- Client tile photo as the hero background (watermark removed, optimized). -->
+      <img
+        src="/creatives/tile/hero.jpg"
+        alt="Bright Arizona kitchen with marble-look tile floor installed by Zona Floors"
+        fetchpriority="high" loading="eager" decoding="async"
+        width="1500" height="2001" sizes="100vw"
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+      <!-- Light overlay: subtle — keeps the tile vivid, just softens it for legibility. -->
+      <div class="absolute inset-0 -z-10 bg-gradient-to-b from-white/55 via-white/35 to-white/20"></div>
+
+      <div class="text-shadow-glow mx-auto max-w-3xl px-5 pb-12 pt-6 text-center sm:pt-10">
         <p data-reveal class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-bold text-brand shadow-md ring-1 ring-brand/10 sm:text-base">
           <span class="text-gold" aria-hidden="true">★★★★★</span> 5-Star Rated on Google · 4.9 · 103+ reviews
         </p>
@@ -112,28 +149,17 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         <h1 class="mt-5 text-4xl font-extrabold leading-[1.02] text-brand sm:text-5xl">
           Tile Floor Installation in <span class="text-pop">{metro}</span>
         </h1>
-        <p class="mx-auto mt-5 max-w-2xl text-xl text-ink/80 sm:text-2xl">
+        <p class="mx-auto mt-5 max-w-2xl text-xl font-semibold text-ink sm:text-2xl">
           No cracked grout. No lifting tile. No surprise bills. Just a licensed crew and tile set
           dead-flat to last in Arizona homes.
         </p>
 
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
-          <img
-            src="/logos/estimate-seal.png"
-            alt="Zona Floors free in-home estimate seal — no pressure, no obligation"
-            width="220" height="220" loading="eager" decoding="async"
-            class="h-24 w-24 drop-shadow-xl sm:h-28 sm:w-28"
-          />
-          <img
-            src="/logos/veteran-seal.png"
-            alt="Proud to give veterans, active military, seniors & first responders 10% off"
-            width="150" height="150" loading="eager" decoding="async"
-            class="h-20 w-20 drop-shadow-xl sm:h-24 sm:w-24"
-          />
-          <p class="w-full text-base font-extrabold text-brand sm:w-auto sm:text-lg">{offer}</p>
-        </div>
+        <p class="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-base font-extrabold text-brand shadow-md ring-1 ring-pop/30 sm:text-lg">
+          <span class="h-2.5 w-2.5 rounded-full bg-pop" aria-hidden="true"></span>
+          {offer}
+        </p>
 
-        <div class="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+        <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <a href="#lead-form"
              class={`zf-sheen rounded-lg bg-pop px-7 py-4 text-center text-lg font-extrabold text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
             Get My Free Estimate →
@@ -142,6 +168,21 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
              class={`rounded-lg border-2 border-brand/25 bg-white px-7 py-4 text-center text-lg font-extrabold text-brand hover:bg-brand/5 sm:text-xl ${btnLift}`}>
             Call {phone}
           </a>
+        </div>
+
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+          <img
+            src="/logos/estimate-seal.png"
+            alt="Zona Floors free in-home estimate seal — no pressure, no obligation"
+            width="220" height="220" loading="eager" decoding="async"
+            class="h-20 w-20 drop-shadow-xl sm:h-24 sm:w-24"
+          />
+          <img
+            src="/logos/veteran-seal.png"
+            alt="Proud to give veterans, active military, seniors & first responders 10% off"
+            width="150" height="150" loading="eager" decoding="async"
+            class="h-16 w-16 drop-shadow-xl sm:h-20 sm:w-20"
+          />
         </div>
 
         <!-- FloorDaddy-style checkmark guarantee callouts. -->
@@ -172,25 +213,8 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         <p class="mt-5 text-sm text-brand/60">{ctaMicrocopy}</p>
       </div>
 
-      <!-- Real tile projects in mosaic frames (showcase + on-brand motif). -->
-      <div class="mx-auto grid max-w-5xl grid-cols-3 gap-2 px-5 pb-12 sm:gap-3">
-        {photos.tile.map((src, i) => (
-          <div data-reveal data-reveal-delay={i + 1} class={`tile-frame overflow-hidden rounded-xl p-1.5 shadow-lg ${cardLift}`}>
-            <img
-              src={src}
-              alt={`Tile floor installed by Zona Floors (${i + 1})`}
-              width="500"
-              height="500"
-              loading="eager"
-              decoding="async"
-              class="aspect-square w-full rounded-lg object-cover"
-            />
-          </div>
-        ))}
-      </div>
-
-      <!-- Mosaic divider. -->
-      <div class="tile-frame h-5" aria-hidden="true"></div>
+      <!-- Mosaic divider (tile motif). -->
+      <div class="tile-frame absolute inset-x-0 bottom-0 h-4" aria-hidden="true"></div>
     </section>
 
     <!-- ===================== STATS BAND ===================== -->
@@ -207,6 +231,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         ))}
       </div>
     </section>
+
+    <!-- ===================== CREATIVE: patterned tile financing ===================== -->
+    <CreativeBanner src={creatives.patterned.src} alt={creatives.patterned.alt} bg="bg-white" />
 
     <!-- ===================== PRIMARY LEAD FORM ===================== -->
     <section id="lead-form" class="bg-gradient-to-br from-brand-dark to-brand">
@@ -292,6 +319,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       subhead="Every Zona Floors tile install comes with these guarantees, in writing. No surprises, no games."
     />
 
+    <!-- ===================== CREATIVE: senior + veteran discount ===================== -->
+    <CreativeBanner src={creatives.discount.src} alt={creatives.discount.alt} bg="bg-brand/5" />
+
     <!-- ===================== TILE FEATURES (icon grid) ===================== -->
     <section class="relative bg-white">
       <div class="tile-grout pointer-events-none absolute inset-0" aria-hidden="true"></div>
@@ -342,6 +372,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </div>
       </div>
     </section>
+
+    <!-- ===================== CREATIVE: 3-day speed ===================== -->
+    <CreativeBanner src={creatives.speed.src} alt={creatives.speed.alt} bg="bg-brand-dark" />
 
     <!-- ===================== TILE-LOOK SELECTOR ===================== -->
     <section class="bg-gradient-to-b from-white to-brand/5">
@@ -394,6 +427,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </p>
       </div>
     </section>
+
+    <!-- ===================== CREATIVE: 0% financing ===================== -->
+    <CreativeBanner src={creatives.financing.src} alt={creatives.financing.alt} bg="bg-brand/5" />
 
     <!-- ===================== SPLIT FEATURE (asymmetric) ===================== -->
     <section class="overflow-hidden bg-white">
@@ -468,6 +504,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
+    <!-- ===================== CREATIVE: upgrade your tile, no interest ===================== -->
+    <CreativeBanner src={creatives.noInterest.src} alt={creatives.noInterest.alt} bg="bg-white" />
+
     <!-- ===================== SOCIAL PROOF ===================== -->
     <section class="bg-brand/5">
       <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
@@ -530,6 +569,42 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
     <!-- ===================== PROCESS ===================== -->
     <ProcessSteps heading="Your new tile floor in three easy steps" steps={steps} />
 
+    <!-- ===================== FAQ (objection handling → leads) ===================== -->
+    <section class="relative bg-gradient-to-b from-white to-brand/5">
+      <div class="tile-grout pointer-events-none absolute inset-0 opacity-70" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-3xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Tile questions? Answered.</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-xl text-xl text-brand/70 sm:text-2xl">
+            The stuff Valley homeowners ask us most, before they book.
+          </p>
+        </div>
+
+        <div class="mt-10 space-y-4">
+          {faqs.map((f, i) => (
+            <details
+              data-reveal
+              data-reveal-delay={(i % 3) + 1}
+              class="group rounded-2xl border-2 border-brand/10 bg-white p-5 shadow-sm transition-colors open:border-pop/50 sm:p-6"
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-extrabold text-brand [&::-webkit-details-marker]:hidden sm:text-xl">
+                {f.q}
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pop/15 text-xl font-black text-pop transition-transform duration-300 group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="mt-3 text-lg leading-relaxed text-brand/75 sm:text-xl">{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Still have questions? Get a free estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== FINAL FORM ===================== -->
     <section class="bg-gradient-to-br from-brand-dark via-brand-dark to-brand text-white">
       <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
@@ -546,6 +621,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </p>
       </div>
     </section>
+
+    <!-- ===================== CREATIVE: financing closer ===================== -->
+    <CreativeBanner src={creatives.install.src} alt={creatives.install.alt} bg="bg-brand-dark" />
 
     <!-- ===================== SERVICE AREA ===================== -->
     <section class="bg-gradient-to-b from-white to-brand/5">
