@@ -27,7 +27,7 @@ import ProjectGallery from "@/components/ProjectGallery.astro";
 import BeforeAfter from "@/components/BeforeAfter.astro";
 import Guarantees from "@/components/Guarantees.astro";
 import CreativeBanner from "@/components/CreativeBanner.astro";
-import { siteConfig, approvedOffers } from "@/lib/siteConfig";
+import { siteConfig, approvedOffers, readyReviews } from "@/lib/siteConfig";
 import { formatPhone, telHref, smsHref } from "@/lib/phone";
 
 const SLUG = "wood-flooring";
@@ -37,8 +37,9 @@ const offer = approvedOffers()[0]?.text ?? "";
 
 const metro = "Phoenix & the East Valley";
 
-// Hero uses a real intake project photo (from intake.md) for reliable loading.
-const heroImg = photos.hardwood[4];
+// Hero background — client-supplied photo, watermark removed + web-optimized
+// (see scripts that produced /creatives/hero.jpg from the raw hero.png).
+const heroImg = "/creatives/hero.jpg";
 
 // Client-branded promo creatives (self-hosted under /public/creatives). Each is a
 // square sales graphic with a baked-in "Get Free Quote" CTA; rendered as a
@@ -48,7 +49,10 @@ const creatives = {
   financing: { src: "/creatives/c2.jpg", alt: "New floors with 0% interest financing for 12 months, before and after" },
   speed:     { src: "/creatives/c3.jpg", alt: "From demo to done in 3 days: fast, clean, professional hardwood floor installation" },
   trust:     { src: "/creatives/c4.jpg", alt: "Local Phoenix Valley flooring contractors: real work, real accountability" },
-  promo:     { src: "/creatives/c5.jpg", alt: "New hardwood floors in 3 days, with 10% off for veterans and seniors. Book a free estimate today." },
+  // Top-of-page lead-getters (highest-converting client creatives). Each is a
+  // square sales graphic with a baked-in CTA; rendered as a clickable card to #lead-form.
+  speed3day: { src: "/creatives/c5.jpg", alt: "New hardwood floors in 3 days, with 10% off for veterans and seniors. Book a free estimate today." },
+  finance12: { src: "/creatives/7.jpg", alt: "0% financing for 12 months on new hardwood floors, with 10% off for veterans and seniors." },
 };
 
 // Real intake photo for the asymmetric split feature.
@@ -112,15 +116,16 @@ const projectOptions = ["White Oak", "Walnut", "Maple", "Engineered hardwood", "
 // Team-at-work photos (real job-site photos from intake).
 const teamPhotos = photos.team.slice(0, 3);
 
-// Social proof — hardwood + general reviewers. Attributed PARAPHRASES (intake
-// supplied names + summaries, not verbatim text). Swap in real Google review
-// text + city before launch.
-const proof = [
-  { name: "Brennen M.", note: "Two-bath remodel with stunning hardwood floors. Crew: Abraham & Rey." },
-  { name: "Lynn H.", note: "The floors look like they've always been part of the home." },
-  { name: "Jim S.", note: "Full demo and new floors across the whole house in a few days." },
-  { name: "Brandon M.", note: "Quality work, courtesy, fair price. Would easily use them again." },
-];
+// Social proof — REAL verbatim Google reviews (siteConfig, confirmed 2026-06-17).
+// Hardwood-specific first, then general crew reviews. Names shown first-name +
+// last initial only (intake: first names only, no cities on record).
+const fmtName = (n: string) => {
+  const [first, second] = n.trim().split(/\s+/);
+  return second ? `${first} ${second[0]}.` : first;
+};
+const proof = [...readyReviews("hardwood"), ...readyReviews("general")]
+  .slice(0, 4)
+  .map((r) => ({ name: fmtName(r.name), note: r.verbatim }));
 
 // Real review-platform logos. Config (siteConfig.badges) is the source of which
 // platforms; this map carries the rendering asset + intrinsic ratio (for CLS).
@@ -159,7 +164,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         loading="eager"
         decoding="async"
         width="1600"
-        height="1067"
+        height="2134"
         sizes="100vw"
         class="absolute inset-0 -z-10 h-full w-full object-cover"
       />
@@ -198,6 +203,53 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           </a>
         </div>
         <p class="mt-3 text-sm text-white/80">{ctaMicrocopy}</p>
+      </div>
+    </section>
+
+    <!-- ===================== TOP DEALS (client lead-getter creatives) ===================== -->
+    <section class="bg-gradient-to-b from-brand-dark to-brand">
+      <div class="mx-auto max-w-5xl px-5 py-10 sm:py-14">
+        <div data-reveal class="text-center">
+          <span class="inline-flex items-center gap-2 rounded-full bg-pop px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-brand-dark shadow-lg">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-cta opacity-75"></span>
+              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-cta"></span>
+            </span>
+            This month's deals
+          </span>
+          <h2 class="mt-4 text-3xl font-extrabold text-white sm:text-4xl">
+            Two ways to say <span class="text-gold">yes</span> to new floors
+          </h2>
+          <p class="mx-auto mt-3 max-w-xl text-lg text-white/80 sm:text-xl">
+            Tap a deal to lock it into your free estimate.
+          </p>
+        </div>
+
+        <div class="mt-8 grid gap-5 sm:grid-cols-2">
+          {[creatives.speed3day, creatives.finance12].map((c, i) => (
+            <a
+              href="#lead-form"
+              data-reveal
+              data-reveal-delay={i + 1}
+              class={`group relative block overflow-hidden rounded-3xl shadow-2xl ring-4 ring-pop ${btnLift}`}
+            >
+              <img
+                src={c.src}
+                alt={c.alt}
+                width="1080"
+                height="1080"
+                loading="eager"
+                decoding="async"
+                class="block w-full transition-transform duration-500 group-hover:scale-105"
+              />
+              <span class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></span>
+              <!-- Hover/focus CTA sweep so the card reads as tappable. -->
+              <span class="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center gap-2 bg-cta/95 py-3 text-base font-extrabold uppercase tracking-wide text-white transition-transform duration-300 group-hover:translate-y-0 group-focus-visible:translate-y-0">
+                Claim this deal <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -287,28 +339,67 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
-    <!-- ===================== OFFER BLOCK ===================== -->
-    <section class="bg-gradient-to-br from-cta to-cta-dark text-white">
-      <div data-reveal class="mx-auto max-w-4xl px-5 py-14 text-center sm:py-20">
-        <div class="mx-auto flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-full bg-white/10 px-5 py-2.5 text-lg font-semibold text-white ring-1 ring-white/15 sm:text-xl">
-          <span class="inline-flex items-center gap-1.5 whitespace-nowrap">
-            <span class="text-gold" aria-hidden="true">★★★★★</span>
-            5-Star rated
+    <!-- ===================== FREE IN-HOME ESTIMATE (showroom-to-your-door) ===================== -->
+    <section class="relative isolate overflow-hidden bg-gradient-to-br from-cta to-cta-dark text-white">
+      <!-- Soft colored glow accents for depth + pop. -->
+      <span class="pointer-events-none absolute -left-24 -top-24 -z-10 h-72 w-72 rounded-full bg-gold/30 blur-3xl" aria-hidden="true"></span>
+      <span class="pointer-events-none absolute -bottom-28 -right-20 -z-10 h-80 w-80 rounded-full bg-pop/25 blur-3xl" aria-hidden="true"></span>
+
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div data-reveal class="text-center">
+          <span class="inline-flex items-center gap-2 rounded-full bg-pop px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-brand-dark shadow-lg">
+            <span aria-hidden="true">🚚</span> No showroom trip required
           </span>
-          <span class="hidden text-white/35 sm:inline" aria-hidden="true">·</span>
-          <span class="whitespace-nowrap">Licensed AZ crew</span>
-          <span class="hidden text-white/35 sm:inline" aria-hidden="true">·</span>
-          <span class="whitespace-nowrap">Locally owned</span>
+          <h2 class="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+            We bring the showroom <span class="text-gold">to your door</span>
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-white/90 sm:text-2xl">
+            {offer}. We show up with real samples, measure your space, and hand you a clear written price, right there in your living room.
+          </p>
         </div>
-        <p class="mt-5 text-4xl font-extrabold sm:text-5xl">{offer}</p>
-        <p class="mt-3 text-xl text-white/90 sm:text-2xl">
-          A real, all-in quote from a licensed crew. Solid or engineered, priced for your home, with zero surprises.
-        </p>
-        <a href="#lead-form"
-           class={`mt-7 inline-block rounded-xl bg-white px-7 py-4 text-lg font-extrabold text-cta shadow-lg sm:text-xl ${btnLift}`}>
-          Book My Free Estimate →
-        </a>
-        <p class="mt-3 text-base text-white/85">Takes about a minute · No obligation</p>
+
+        <!-- Interactive "what to expect" steps — hover/tap to expand the detail. -->
+        <ol class="mt-12 grid gap-5 sm:grid-cols-3">
+          {[
+            { n: "1", icon: "🚪", title: "We come to you", body: "Pick a time that works. Our licensed crew arrives with samples in hand, no driving to a store." },
+            { n: "2", icon: "🪵", title: "Match it in your light", body: "Lay real White Oak, Walnut & Maple against your walls and your daylight before you commit." },
+            { n: "3", icon: "📝", title: "Written price on the spot", body: "Exact measurements, solid vs. engineered advice, and an all-in quote with zero surprises." },
+          ].map((s, i) => (
+            <li
+              data-reveal
+              data-reveal-delay={i + 1}
+              tabindex="0"
+              class={`group relative flex flex-col overflow-hidden rounded-2xl bg-white/10 p-7 text-left ring-1 ring-white/15 backdrop-blur focus:outline-none focus-visible:ring-2 focus-visible:ring-pop ${cardLift} hover:bg-white/15`}
+            >
+              <span class="absolute right-5 top-4 text-6xl font-extrabold leading-none text-white/10 transition-colors duration-300 group-hover:text-pop/30" aria-hidden="true">{s.n}</span>
+              <span class="text-4xl" aria-hidden="true">{s.icon}</span>
+              <span class="mt-4 text-2xl font-extrabold text-white sm:text-3xl">{s.title}</span>
+              <span class="mt-2 text-lg leading-relaxed text-white/85 sm:text-xl">{s.body}</span>
+              <!-- Accent bar sweeps in on hover/focus. -->
+              <span class="mt-5 block h-1 w-12 origin-left rounded bg-gold transition-all duration-300 group-hover:w-full group-hover:bg-pop group-focus-visible:w-full"></span>
+            </li>
+          ))}
+        </ol>
+
+        <div data-reveal class="mt-12 flex flex-col items-center">
+          <a href="#lead-form"
+             class={`inline-flex items-center gap-2 rounded-xl bg-pop px-8 py-4 text-lg font-extrabold uppercase tracking-wide text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
+            Book My Free Estimate <span aria-hidden="true">→</span>
+          </a>
+          <p class="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-base text-white/90">
+            <span class="inline-flex items-center gap-1.5"><span class="text-gold" aria-hidden="true">★★★★★</span> 5-Star rated</span>
+            <span class="text-white/40" aria-hidden="true">·</span>
+            <span>Takes about a minute</span>
+            <span class="text-white/40" aria-hidden="true">·</span>
+            <span>No obligation</span>
+          </p>
+          <p class="mt-3 text-lg text-white/90">
+            Prefer to talk?
+            <a href={telHref(phones.primary)} data-track-call class="font-extrabold text-gold underline underline-offset-2 hover:text-white">Call {phone}</a>
+            or
+            <a href={smsHref(phones.primary)} data-track-sms class="font-extrabold text-gold underline underline-offset-2 hover:text-white">text us</a>.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -435,14 +526,11 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
             </p>
           </div>
           <div data-reveal class="mt-10">
-            <BeforeAfter before={ba.before} after={ba.after} alt="Zona Floors hardwood project" />
+            <BeforeAfter before={ba.before} after={ba.after} alt="Zona Floors hardwood project" ratioClass="aspect-square" showLabels={false} />
           </div>
         </div>
       </section>
     )}
-
-    <!-- ===================== PROMO CREATIVE (3 days + veterans) ===================== -->
-    <CreativeBanner src={creatives.promo.src} alt={creatives.promo.alt} bg="bg-brand/5" />
 
     <!-- ===================== TEAM AT WORK ===================== -->
     <section class="bg-gradient-to-b from-brand to-brand-dark text-white">

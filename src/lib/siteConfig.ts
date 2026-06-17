@@ -278,20 +278,23 @@ export const siteConfig: SiteConfig = {
       count: 103,
       platform: 'Google',
     },
-    // Intake supplied reviewer names + paraphrased summaries only.
-    // `verbatim` must be filled with the real review text before any review renders.
+    // Verbatim review text CONFIRMED by client intake 2026-06-17 (real Google
+    // reviews, first name + last initial only — no cities on record). `verbatim`
+    // is what renders to visitors; `summary` is the internal matching note.
     quotes: [
-      { name: 'Troy Lovelady', service: 'tile', verbatim: '', summary: 'Bowing/broken tile over an uneven crawl-space subfloor; took on the full first-floor tile project.', rating: null },
-      { name: 'Will Harris', service: 'tile', verbatim: '', summary: 'Crew demoed 750 sqft of tile in one day; chose Zona on price + reviews (salesman Jacob).', rating: null },
-      { name: 'Craig Dombey', service: 'tile', verbatim: '', summary: 'Researched contractors for days, picked Zona for a 400 sqft ceramic tile floor; "great decision".', rating: null },
-      { name: 'Gary Blackburn', service: 'tile', verbatim: '', summary: 'Porcelain install, Jacob as salesman/PM, strong communication.', rating: null },
-      { name: 'Tom Finn', service: 'laminate', verbatim: '', summary: 'Laminate install by Abraham; praised professionalism and craft.', rating: null },
-      { name: 'Brit Celebrano', service: 'laminate', verbatim: '', summary: 'Removed laminate + carpet, installed new laminate + baseboards whole-home (Hannah, sales).', rating: null },
-      { name: 'Jan Strzalkowski', service: 'laminate', verbatim: '', summary: 'Laminate from Floor & Decor; Tom patient through selection.', rating: null },
-      { name: 'Brennen Matthews', service: 'hardwood', verbatim: '', summary: 'Two-bathroom remodel + "stunning" hardwood floors (Abraham & Rey).', rating: null },
-      { name: 'Jim Skelnik', service: 'general', verbatim: '', summary: 'Full-home demo + new floors in 3 days (Tom & Abraham\'s crew).', rating: null },
-      { name: 'Lynn Harris', service: 'general', verbatim: '', summary: 'Full-house project; "floors look like they\'ve always been part of the home".', rating: null },
-      { name: 'Brandon McKay', service: 'general', verbatim: '', summary: 'Workmanship, courtesy, fair price; "would easily use them again".', rating: null },
+      { name: 'Troy Lovelady', service: 'tile', verbatim: 'For years, we would come home to broken and bowing tile in our house. Our house has a crawl space with an uneven subfloor.', summary: 'Bowing/broken tile over an uneven crawl-space subfloor; took on the full first-floor tile project.', rating: 5 },
+      { name: 'Will Harris', service: 'tile', verbatim: 'We decided on Zona Floors because they had the best price and the best reviews. Jacob was our salesman and came in and explained everything great.', summary: 'Crew demoed 750 sqft of tile in one day; chose Zona on price + reviews (salesman Jacob).', rating: 5 },
+      { name: 'Craig Dombey', service: 'tile', verbatim: 'I spent several days researching tile contractors for a 400 sq ft ceramic tile floor. I settled on Zona Floors and it was a great decision.', summary: 'Researched contractors for days, picked Zona for a 400 sqft ceramic tile floor; "great decision".', rating: 5 },
+      { name: 'Gary Blackburn', service: 'tile', verbatim: 'We had a wonderful experience with Zona Floors. Jacob was our salesman and project manager. He did a great job with communication and keeping everything on track.', summary: 'Porcelain install, Jacob as salesman/PM, strong communication.', rating: 5 },
+      { name: 'Tom Finn', service: 'laminate', verbatim: 'I cannot recommend Abraham from Zona Floors highly enough for the incredible work he did installing our new laminate flooring!', summary: 'Laminate install by Abraham; praised professionalism and craft.', rating: 5 },
+      { name: 'Brit Celebrano', service: 'laminate', verbatim: 'We hired Zona Floors to remove our current flooring (laminate and carpet) and install new laminate flooring and baseboards throughout our home.', summary: 'Removed laminate + carpet, installed new laminate + baseboards whole-home.', rating: 5 },
+      { name: 'Jan Strzalkowski', service: 'laminate', verbatim: 'Tom gave us a great estimate and was very patient with us while we were deciding on what type of floor we wanted. We ended up going with a laminate floor that we really liked.', summary: 'Laminate from Floor & Decor; Tom patient through selection.', rating: 5 },
+      { name: 'Brennen Matthews', service: 'hardwood', verbatim: 'Zona Floors were amazing to work with. Abraham was the most involved and responsive person and Rey was super friendly, neat, and dependable. They really are super people.', summary: 'Two-bathroom remodel + "stunning" hardwood floors (Abraham & Rey).', rating: 5 },
+      { name: 'Jim Skelnik', service: 'general', verbatim: 'Tom, Abraham and their crew did an excellent job! They had the demo and the new floors for the entire home done in 3 days.', summary: 'Full-home demo + new floors in 3 days (Tom & Abraham\'s crew).', rating: 5 },
+      { name: 'Brandon McKay', service: 'general', verbatim: 'I was very impressed with the workmanship and quality of Zona Floors. Their crew was courteous, professional and took their craft seriously. The finished product looked amazing. Price was fair. I would easily use them again.', summary: 'Workmanship, courtesy, fair price; "would easily use them again".', rating: 5 },
+      { name: 'Kristin A.', service: 'general', verbatim: 'One of the best companies I have ever worked with. They were punctual, followed up with regular communication, did not rush the installation at all. They were meticulous. I am so happy with my floor installation.', summary: 'Punctual, communicative, meticulous; very happy with the install.', rating: 5 },
+      { name: 'Auston', service: 'general', verbatim: 'Top notch professionals! Highly recommend Zona Floors — their entire team from sales to customer service to installation have been great to work with.', summary: 'Whole team (sales → service → install) great to work with.', rating: 5 },
+      { name: 'Ashley R.', service: 'general', verbatim: 'We had a great experience working with Tom during the estimate process. He was prompt, knowledgeable, and took the time to walk through all the details with us.', summary: 'Great estimate experience with Tom; prompt and knowledgeable.', rating: 5 },
     ],
   },
 
@@ -327,7 +330,12 @@ export const siteConfig: SiteConfig = {
   // REQUIRED for the before/after slider: a real matched pair (same room, old
   // floor → finished hardwood). Intake supplied none — left empty so nothing
   // fabricated ships. Fill both to make the slider appear.
-  beforeAfter: { before: '', after: '' },
+  beforeAfter: {
+    // Real matched pair (same room: old carpet → new hardwood), client-supplied
+    // 2026-06-17. Branded BEFORE/AFTER labels + logo baked into the squares.
+    before: '/creatives/before.jpg',
+    after: '/creatives/after.jpg',
+  },
 
   brand: {
     logo: `${ASSET_BASE}/6a21a870bf33b4d0d048ecf6.jpg`,
@@ -350,9 +358,8 @@ export const siteConfig: SiteConfig = {
   },
 
   consent: {
-    // From intake. NOTE: client written sign-off + 10DLC match still pending —
-    // confirm this wording matches the registered 10DLC campaign before launch.
-    sms: "By submitting, you agree Zona Floors may call & text you (incl. automated) about your project. Consent isn't required to buy. Msg & data rates may apply. Reply STOP to opt out, HELP for help. Privacy Policy & Terms apply.",
+    // APPROVED wording, client intake 2026-06-17. Renders adjacent to every phone field.
+    sms: "By submitting, you agree to receive calls/texts (incl. automated) from Zona Floors; consent isn't required to buy. Msg/data rates may apply. Reply STOP to opt out, HELP for help. Privacy Policy & Terms apply.",
   },
 
   domain: 'zonafloors.net', // From intake (deploy target; push to GitHub).

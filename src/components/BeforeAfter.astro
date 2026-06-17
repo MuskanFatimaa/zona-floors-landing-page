@@ -13,6 +13,10 @@ interface Props {
   beforeLabel?: string;
   afterLabel?: string;
   alt?: string;
+  /** Aspect-ratio utility for the frame. Use "aspect-square" for square creatives. */
+  ratioClass?: string;
+  /** Hide the corner pills (e.g. when the labels are baked into the images). */
+  showLabels?: boolean;
 }
 const {
   before,
@@ -20,21 +24,27 @@ const {
   beforeLabel = "Before",
   afterLabel = "After",
   alt = "Hardwood flooring project",
+  ratioClass = "aspect-[4/3]",
+  showLabels = true,
 } = Astro.props;
 ---
 
 {before && after && (
   <div
     data-ba
-    class="relative aspect-[4/3] w-full select-none overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5"
+    class={`relative ${ratioClass} w-full select-none overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5`}
   >
     <img src={after} alt={`${alt} — after`} loading="lazy" decoding="async"
          class="absolute inset-0 h-full w-full object-cover" />
     <img src={before} alt={`${alt} — before`} loading="lazy" decoding="async" data-ba-before
          class="absolute inset-0 h-full w-full object-cover [clip-path:inset(0_50%_0_0)]" />
 
-    <span class="pointer-events-none absolute left-4 top-4 rounded-full bg-brand-dark/80 px-3 py-1 text-sm font-bold text-white">{beforeLabel}</span>
-    <span class="pointer-events-none absolute right-4 top-4 rounded-full bg-cta/90 px-3 py-1 text-sm font-bold text-white">{afterLabel}</span>
+    {showLabels && (
+      <>
+        <span class="pointer-events-none absolute left-4 top-4 rounded-full bg-brand-dark/80 px-3 py-1 text-sm font-bold text-white">{beforeLabel}</span>
+        <span class="pointer-events-none absolute right-4 top-4 rounded-full bg-cta/90 px-3 py-1 text-sm font-bold text-white">{afterLabel}</span>
+      </>
+    )}
 
     <!-- Divider + grip -->
     <div data-ba-handle class="pointer-events-none absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.15)]">
