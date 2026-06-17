@@ -83,8 +83,8 @@ const steps = [
 // pre-selects it in the lead form (shared script at the bottom).
 const looks = [
   { name: "Decorative pattern", note: "Bold, eye-catching tile", img: photos.tile[0] },
-  { name: "Marble-look", note: "Bright, timeless elegance", img: photos.tile[2] },
-  { name: "Stone & dark tones", note: "Dramatic, modern depth", img: photos.tile[1] },
+  { name: "Marble-look", note: "Bright, timeless elegance", img: "/creatives/tile/white-tiles.jpg" },
+  { name: "Stone & dark tones", note: "Dramatic, modern depth", img: "/creatives/tile/black-marble.jpg" },
 ];
 
 const projectOptions = ["Porcelain", "Ceramic", "Natural stone", "Marble-look", "Decorative pattern", "Other / not sure"];
@@ -321,10 +321,17 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
     <!-- ===================== CREATIVE: senior + veteran discount ===================== -->
     <CreativeBanner src={creatives.discount.src} alt={creatives.discount.alt} bg="bg-brand/5" />
 
-    <!-- ===================== TILE FEATURES (icon grid) ===================== -->
-    <section class="relative bg-white">
-      <div class="tile-grout pointer-events-none absolute inset-0" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-6xl px-5 py-14 sm:py-20">
+    <!-- ===================== TILE FEATURES (icon grid, marble bg) ===================== -->
+    <section class="relative isolate overflow-hidden">
+      <img
+        src="/creatives/tile/white-marble.jpg"
+        alt="" aria-hidden="true"
+        width="1500" height="2001" loading="lazy" decoding="async"
+        class="absolute inset-0 -z-10 h-full w-full object-cover"
+      />
+      <!-- Soft white wash so the cards + copy stay crisp over the marble. -->
+      <div class="absolute inset-0 -z-10 bg-white/75"></div>
+      <div class="relative mx-auto max-w-6xl px-5 py-16 sm:py-24">
         <div data-reveal class="text-center">
           <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Tile floors set to last in Arizona homes</h2>
           <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
@@ -503,8 +510,8 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         <div class="mt-6 grid gap-5 sm:grid-cols-3">
           {[
             { src: "/creatives/tile/white-tiles.jpg", label: "Calacatta-look bathroom" },
-            { src: photos.tile[2], label: "Marble-look kitchen floor" },
-            { src: photos.tile[1], label: "Dark stone-look great room" },
+            { src: "/creatives/tile/white-marble.jpg", label: "Polished Calacatta marble bath" },
+            { src: "/creatives/tile/black-marble.jpg", label: "Black marble great room" },
           ].map((p, i) => (
             <figure data-reveal data-reveal-delay={i + 1} class="group relative overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/10">
               <img
