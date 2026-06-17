@@ -17,6 +17,7 @@ import LeadForm from "@/components/LeadForm.astro";
 import ProcessSteps from "@/components/ProcessSteps.astro";
 import Guarantees from "@/components/Guarantees.astro";
 import CreativeBanner from "@/components/CreativeBanner.astro";
+import BeforeAfter from "@/components/BeforeAfter.astro";
 import { siteConfig, approvedOffers, approvedGuarantees, readyReviews } from "@/lib/siteConfig";
 import { formatPhone, telHref, smsHref } from "@/lib/phone";
 
@@ -32,11 +33,15 @@ const metro = "Phoenix & the East Valley";
 const creatives = {
   patterned:  { src: "/creatives/tile/tile-2.jpg", alt: "Interest-free for 12 months on patterned tile floors, with 10% off for veterans." },
   financing:  { src: "/creatives/tile/tile-5.jpg", alt: "0% financing for 12 months on new tile floors, plus 10% off for veterans and seniors." },
-  discount:   { src: "/creatives/tile/tile-3.jpg", alt: "Senior discounts on all flooring jobs, plus a thank-you discount for veterans." },
+  discount:   { src: "/creatives/tile/tile-giveback.jpg", alt: "Tile floors done in 3 days, free in-home estimation, 10% off for military, seniors and first responders." },
   speed:      { src: "/creatives/tile/tile-6.jpg", alt: "New tile floors in 3 days, with 10% off for veterans and seniors. Book a free estimate." },
   noInterest: { src: "/creatives/tile/tile-4.jpg", alt: "Upgrade your tile with no interest for a year, plus 10% off for veterans." },
-  install:    { src: "/creatives/tile/tile-1.jpg", alt: "Interest-free for 12 months, with 10% off for veterans. Book a free estimate." },
+  realwork:   { src: "/creatives/tile/tile-realwork.jpg", alt: "Local Phoenix Valley flooring contractors — real work, real accountability. 10% off for veterans & seniors." },
 };
+
+// Real before/after tile project (same room: old cracked tile → new star-pattern
+// tile). Branded BEFORE/AFTER labels are baked into the squares.
+const beforeAfter = { before: "/creatives/tile/tile-before.jpg", after: "/creatives/tile/tile-after.jpg" };
 
 // FAQ — lead-friction reducers, written from approved intake facts only.
 const faqs = [
@@ -84,7 +89,6 @@ const looks = [
 
 const projectOptions = ["Porcelain", "Ceramic", "Natural stone", "Marble-look", "Decorative pattern", "Other / not sure"];
 const featureImg = photos.tile[0];
-const teamPhotos = photos.team.slice(0, 3);
 
 // Social proof — REAL verbatim Google reviews. Tile-specific first, then general.
 const fmtName = (n: string) => {
@@ -92,7 +96,7 @@ const fmtName = (n: string) => {
   return second ? `${first} ${second[0]}.` : first;
 };
 const proof = [...readyReviews("tile"), ...readyReviews("general")]
-  .slice(0, 4)
+  .slice(0, 8)
   .map((r) => ({ name: fmtName(r.name), note: r.verbatim }));
 
 const LOGO_FILES: Record<string, { file: string; w: number; h: number }> = {
@@ -132,8 +136,8 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
     <section class="relative isolate overflow-hidden text-brand">
       <!-- Client tile photo as the hero background (watermark removed, optimized). -->
       <img
-        src="/creatives/tile/hero.jpg"
-        alt="Bright Arizona kitchen with marble-look tile floor installed by Zona Floors"
+        src="/creatives/tile/white-tiles.jpg"
+        alt="Bright bathroom with glossy white marble-look tile floor installed by Zona Floors"
         fetchpriority="high" loading="eager" decoding="async"
         width="1500" height="2001" sizes="100vw"
         class="absolute inset-0 -z-10 h-full w-full object-cover"
@@ -150,16 +154,11 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           Tile Floor Installation in <span class="text-pop">{metro}</span>
         </h1>
         <p class="mx-auto mt-5 max-w-2xl text-xl font-semibold text-ink sm:text-2xl">
-          No cracked grout. No lifting tile. No surprise bills. Just a licensed crew and tile set
-          dead-flat to last in Arizona homes.
+          No cracked grout. No lifting tile. No surprise bills — just a licensed crew, tile set
+          dead-flat to last in Arizona homes, and a free in-home estimate.
         </p>
 
-        <p class="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-base font-extrabold text-brand shadow-md ring-1 ring-pop/30 sm:text-lg">
-          <span class="h-2.5 w-2.5 rounded-full bg-pop" aria-hidden="true"></span>
-          {offer}
-        </p>
-
-        <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <div class="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
           <a href="#lead-form"
              class={`zf-sheen rounded-lg bg-pop px-7 py-4 text-center text-lg font-extrabold text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
             Get My Free Estimate →
@@ -168,21 +167,6 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
              class={`rounded-lg border-2 border-brand/25 bg-white px-7 py-4 text-center text-lg font-extrabold text-brand hover:bg-brand/5 sm:text-xl ${btnLift}`}>
             Call {phone}
           </a>
-        </div>
-
-        <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
-          <img
-            src="/logos/estimate-seal.png"
-            alt="Zona Floors free in-home estimate seal — no pressure, no obligation"
-            width="220" height="220" loading="eager" decoding="async"
-            class="h-20 w-20 drop-shadow-xl sm:h-24 sm:w-24"
-          />
-          <img
-            src="/logos/veteran-seal.png"
-            alt="Proud to give veterans, active military, seniors & first responders 10% off"
-            width="150" height="150" loading="eager" decoding="async"
-            class="h-16 w-16 drop-shadow-xl sm:h-20 sm:w-20"
-          />
         </div>
 
         <!-- FloorDaddy-style checkmark guarantee callouts. -->
@@ -291,7 +275,22 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           ))}
         </ol>
 
-        <div data-reveal class="mt-12 flex flex-col items-center">
+        <div data-reveal class="mt-12 flex items-center justify-center gap-6">
+          <img
+            src="/logos/estimate-seal.png"
+            alt="Zona Floors free in-home estimate seal — no pressure, no obligation"
+            width="220" height="220" loading="lazy" decoding="async"
+            class="h-24 w-24 drop-shadow-2xl sm:h-32 sm:w-32"
+          />
+          <img
+            src="/logos/veteran-seal.png"
+            alt="Proud to give veterans, active military, seniors & first responders 10% off"
+            width="150" height="150" loading="lazy" decoding="async"
+            class="h-20 w-20 drop-shadow-2xl sm:h-28 sm:w-28"
+          />
+        </div>
+
+        <div data-reveal class="mt-10 flex flex-col items-center">
           <a href="#lead-form"
              class={`zf-sheen inline-flex items-center gap-2 rounded-lg bg-pop px-8 py-4 text-lg font-extrabold uppercase tracking-wide text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
             Book My Free Estimate <span aria-hidden="true">→</span>
@@ -477,29 +476,114 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
-    <!-- ===================== TEAM AT WORK ===================== -->
-    <section class="relative bg-gradient-to-b from-brand to-brand-dark text-white">
-      <div class="tile-grout pointer-events-none absolute inset-0 opacity-25" aria-hidden="true"></div>
-      <div class="relative mx-auto max-w-6xl px-5 py-14 sm:py-20">
-        <div data-reveal class="text-center">
-          <h2 class="text-4xl font-extrabold leading-[1.05] sm:text-5xl">The crew behind your floors</h2>
+    <!-- ===================== FINISHED RESULTS (furnished rooms) ===================== -->
+    <section class="overflow-hidden bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div data-reveal class="mx-auto max-w-2xl text-center">
+          <span class="text-sm font-extrabold uppercase tracking-[0.2em] text-pop">The finished look</span>
+          <h2 class="mt-3 text-3xl font-extrabold text-brand sm:text-4xl">Tile that transforms the whole room</h2>
           <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
-          <p class="mx-auto mt-5 max-w-xl text-xl text-white/85 sm:text-2xl">
-            Our own installers on the job across the Valley. No day-labor subs, just craftsmen Valley homeowners trust.
-          </p>
+          <p class="mt-4 text-xl text-brand/70 sm:text-2xl">Real Zona Floors installs — fully furnished and ready to live in.</p>
         </div>
-        <div class="mt-10 grid gap-4 sm:grid-cols-3">
-          {teamPhotos.map((src, i) => (
-            <div data-reveal data-reveal-delay={i + 1} class="group overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/10">
+
+        <!-- Wide feature result. -->
+        <figure data-reveal class="group relative mt-12 overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10">
+          <img
+            src="/creatives/tile/black-white.jpg"
+            alt="Open-plan kitchen with bold marble-veined porcelain tile by Zona Floors"
+            width="1600" height="840" loading="lazy" decoding="async"
+            class="aspect-[16/9] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/85 to-transparent p-6 pt-16 text-left">
+            <span class="text-lg font-extrabold text-white sm:text-2xl">Bold marble-veined porcelain · open-plan kitchen</span>
+          </figcaption>
+        </figure>
+
+        <!-- 3-up furnished rooms. -->
+        <div class="mt-6 grid gap-5 sm:grid-cols-3">
+          {[
+            { src: "/creatives/tile/white-tiles.jpg", label: "Calacatta-look bathroom" },
+            { src: photos.tile[2], label: "Marble-look kitchen floor" },
+            { src: photos.tile[1], label: "Dark stone-look great room" },
+          ].map((p, i) => (
+            <figure data-reveal data-reveal-delay={i + 1} class="group relative overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/10">
               <img
-                src={src}
-                alt={`Zona Floors installer at work (${i + 1})`}
-                loading="lazy"
-                decoding="async"
-                class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                src={p.src}
+                alt={`Finished Zona Floors tile floor — ${p.label}`}
+                width="600" height="800" loading="lazy" decoding="async"
+                class="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-            </div>
+              <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/80 to-transparent p-4 pt-12 text-left">
+                <span class="text-base font-extrabold text-white sm:text-lg">{p.label}</span>
+              </figcaption>
+            </figure>
           ))}
+        </div>
+
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get this look — free estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BEFORE / AFTER (real tile transformation) ===================== -->
+    <section class="bg-gradient-to-b from-brand/5 to-white">
+      <div class="mx-auto max-w-4xl px-5 py-16 sm:py-24">
+        <div data-reveal class="text-center">
+          <span class="text-sm font-extrabold uppercase tracking-[0.2em] text-pop">Before &amp; after</span>
+          <h2 class="mt-3 text-3xl font-extrabold text-brand sm:text-4xl">Same room. Whole new floor.</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-4 text-xl text-brand/70 sm:text-2xl">Drag to watch an old, cracked tile floor become a showpiece.</p>
+        </div>
+        <div data-reveal class="mt-10">
+          <BeforeAfter
+            before={beforeAfter.before}
+            after={beforeAfter.after}
+            alt="Zona Floors tile transformation"
+            ratioClass="aspect-square"
+            showLabels={false}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TEAM AT WORK (tile crew) ===================== -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-brand to-brand-dark text-white">
+      <div class="tile-grout pointer-events-none absolute inset-0 opacity-25" aria-hidden="true"></div>
+      <div class="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal class="relative">
+          <img
+            src="/creatives/tile/team-tile.jpg"
+            alt="A Zona Floors installer setting and grouting tile on a Valley job"
+            width="1000" height="1334" loading="lazy" decoding="async"
+            class="w-full rounded-3xl object-cover shadow-2xl ring-1 ring-white/10"
+          />
+          <span class="absolute -bottom-4 -left-3 -rotate-3 rounded-lg bg-pop px-4 py-2 text-base font-extrabold uppercase tracking-wide text-brand-dark shadow-xl ring-2 ring-white">
+            Our own crew
+          </span>
+        </div>
+        <div data-reveal data-reveal-delay="1">
+          <h2 class="text-4xl font-extrabold leading-[1.05] sm:text-5xl">The crew behind your tile</h2>
+          <span class="mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-6 text-xl text-white/85 sm:text-2xl">
+            Our own installers on every job across the Valley — no day-labor subs, just craftsmen who
+            set tile dead-flat, seal the grout, and clean up like they were never there.
+          </p>
+          <ul class="mt-7 space-y-3 text-lg text-white/90 sm:text-xl">
+            {["Licensed Arizona contractor, never a big-box middleman", "Tile set lippage-free, grout sealed for the long haul", "Most projects finished in just 3 to 7 days"].map((p) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pop text-brand-dark">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="#lead-form" class={`zf-sheen mt-8 inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
         </div>
       </div>
     </section>
@@ -622,8 +706,8 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       </div>
     </section>
 
-    <!-- ===================== CREATIVE: financing closer ===================== -->
-    <CreativeBanner src={creatives.install.src} alt={creatives.install.alt} bg="bg-brand-dark" />
+    <!-- ===================== CREATIVE: real work / accountability closer ===================== -->
+    <CreativeBanner src={creatives.realwork.src} alt={creatives.realwork.alt} bg="bg-brand-dark" />
 
     <!-- ===================== SERVICE AREA ===================== -->
     <section class="bg-gradient-to-b from-white to-brand/5">

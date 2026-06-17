@@ -6,9 +6,9 @@
 @import "@fontsource-variable/dm-sans/index.css";
 @import "@fontsource-variable/fraunces/index.css";
 /* Tile page identity (see .tile-theme below): Bricolage Grotesque display +
-   Plus Jakarta Sans body — distinct from the wood page's Fraunces/DM Sans. */
+   Manrope body — distinct from the wood page's Fraunces/DM Sans. */
 @import "@fontsource-variable/bricolage-grotesque/index.css";
-@import "@fontsource-variable/plus-jakarta-sans/index.css";
+@import "@fontsource-variable/manrope/index.css";
 
 /*
  * Brand theme — derived from the Zona Floors logo (Arizona state-flag identity:
@@ -161,7 +161,7 @@ h3 {
 /*
  * TILE PAGE THEME — scoped to .tile-theme (the /tile-flooring <main>) so the
  * wood page is untouched. Same FloorDaddy energy, different visual identity:
- *   - Bricolage Grotesque headings + Plus Jakarta Sans body (vs the wood serif).
+ *   - Bricolage Grotesque headings + Manrope body (vs the wood serif/DM Sans).
  *   - Crisper, more "architectural" corners (tile = grid/geometry).
  *   - Cohesive palette: deep blue + neon pink/magenta + gold (red folded into
  *     the pink family so nothing clashes).
@@ -174,12 +174,12 @@ h3 {
   --color-cta-dark: #ab1561;
   --color-brand: #0f3d6b;      /* deep blue — structure/headings */
   --color-brand-dark: #06203a; /* deep navy — dark sections */
-  font-family: "Plus Jakarta Sans Variable", var(--font-sans);
+  font-family: "Manrope Variable", var(--font-sans);
 }
 .tile-theme h1,
 .tile-theme h2,
 .tile-theme h3 {
-  font-family: "Bricolage Grotesque Variable", "Plus Jakarta Sans Variable", sans-serif;
+  font-family: "Bricolage Grotesque Variable", "Manrope Variable", sans-serif;
   letter-spacing: -0.02em;
 }
 .tile-theme .rounded-3xl { border-radius: 0.625rem; }
