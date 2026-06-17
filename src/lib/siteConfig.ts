@@ -333,8 +333,8 @@ export const siteConfig: SiteConfig = {
   beforeAfter: {
     // Real matched pair (same room: old carpet → new hardwood), client-supplied
     // 2026-06-17. Branded BEFORE/AFTER labels + logo baked into the squares.
-    before: '/creatives/before.jpg',
-    after: '/creatives/after.jpg',
+    before: '/creatives/hardwood/before.jpg',
+    after: '/creatives/hardwood/after.jpg',
   },
 
   brand: {

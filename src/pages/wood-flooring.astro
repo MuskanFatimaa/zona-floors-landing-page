@@ -39,21 +39,21 @@ const metro = "Phoenix & the East Valley";
 
 // Hero background — client-supplied photo, watermark removed + web-optimized
 // (see scripts that produced /creatives/hero.jpg from the raw hero.png).
-const heroImg = "/creatives/hero.jpg";
+const heroImg = "/creatives/hardwood/hero.jpg";
 
 // Client-branded promo creatives (self-hosted under /public/creatives). Each is a
 // square sales graphic with a baked-in "Get Free Quote" CTA; rendered as a
 // clickable CreativeBanner that jumps to the lead form so it actually converts.
 const creatives = {
-  pricing:   { src: "/creatives/c1.jpg", alt: "Zona Floors hardwood with honest up-front pricing: the price we quote is the price you pay" },
-  financing: { src: "/creatives/c2.jpg", alt: "New floors with 0% interest financing for 12 months, before and after" },
-  speed:     { src: "/creatives/c7.jpg", alt: "Bored of your old grey carpet? Get new floors in 3 days. Before and after, with 10% off for veterans." },
-  trust:     { src: "/creatives/c4.jpg", alt: "Local Phoenix Valley flooring contractors: real work, real accountability" },
-  discount:  { src: "/creatives/c9.jpg", alt: "Senior discounts on all flooring jobs, plus a thank-you discount for veterans. Book a free estimate today." },
+  pricing:   { src: "/creatives/hardwood/c1.jpg", alt: "Zona Floors hardwood with honest up-front pricing: the price we quote is the price you pay" },
+  financing: { src: "/creatives/hardwood/c2.jpg", alt: "New floors with 0% interest financing for 12 months, before and after" },
+  speed:     { src: "/creatives/hardwood/c7.jpg", alt: "Bored of your old grey carpet? Get new floors in 3 days. Before and after, with 10% off for veterans." },
+  trust:     { src: "/creatives/hardwood/c4.jpg", alt: "Local Phoenix Valley flooring contractors: real work, real accountability" },
+  discount:  { src: "/creatives/hardwood/c9.jpg", alt: "Senior discounts on all flooring jobs, plus a thank-you discount for veterans. Book a free estimate today." },
   // Top-of-page lead-getters (highest-converting client creatives). Each is a
   // square sales graphic with a baked-in CTA; rendered as a clickable card to #lead-form.
-  speed3day: { src: "/creatives/c5.jpg", alt: "New hardwood floors in 3 days, with 10% off for veterans and seniors. Book a free estimate today." },
-  finance12: { src: "/creatives/7.jpg", alt: "0% financing for 12 months on new hardwood floors, with 10% off for veterans and seniors." },
+  speed3day: { src: "/creatives/hardwood/c5.jpg", alt: "New hardwood floors in 3 days, with 10% off for veterans and seniors. Book a free estimate today." },
+  finance12: { src: "/creatives/hardwood/7.jpg", alt: "0% financing for 12 months on new hardwood floors, with 10% off for veterans and seniors." },
 };
 
 // Real intake photo for the asymmetric split feature.
@@ -192,9 +192,21 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           built to stay flat and gap-free in the Arizona desert.
         </p>
 
-        <p class="mt-6 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-base font-extrabold text-brand-dark shadow-lg sm:text-lg">
-          {offer}
-        </p>
+        <div class="mt-5 flex items-center gap-3">
+          <img
+            src="/logos/estimate-seal.png"
+            alt="Zona Floors free in-home estimate seal — no pressure, no obligation"
+            width="220" height="220" loading="eager" decoding="async"
+            class="h-20 w-20 drop-shadow-xl sm:h-24 sm:w-24"
+          />
+          <img
+            src="/logos/veteran-seal.png"
+            alt="Proud to give veterans, active military, seniors & first responders 10% off"
+            width="150" height="150" loading="eager" decoding="async"
+            class="h-16 w-16 drop-shadow-xl sm:h-20 sm:w-20"
+          />
+          <p class="text-base font-extrabold text-gold sm:text-lg">{offer}</p>
+        </div>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row">
           <a href="#lead-form"
@@ -549,8 +561,8 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         </div>
         <div class="mt-10 grid gap-5 sm:grid-cols-2">
           {[
-            { src: "/creatives/styled-1.jpg", label: "Light oak, sun-filled living room" },
-            { src: "/creatives/styled-2.jpg", label: "Rich, hand-scraped walnut tones" },
+            { src: "/creatives/hardwood/styled-1.jpg", label: "Light oak, sun-filled living room" },
+            { src: "/creatives/hardwood/styled-2.jpg", label: "Rich, hand-scraped walnut tones" },
           ].map((p, i) => (
             <figure data-reveal data-reveal-delay={i + 1} class="group relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10">
               <img

@@ -454,9 +454,11 @@ FodyWeavers.xsd
 *.msp
 
 # Raw image sources — only the optimized .jpg versions are committed/shipped
-/public/creatives/*.png
-/public/creatives/Ad Creative *.jpg
-/public/creatives/Zona Floors Ad Creatives.jpg
+# (creatives are now organized into per-service subfolders, hence the **)
+/public/creatives/**/*.png
+/public/creatives/**/Ad Creative *.jpg
+/public/creatives/**/Zona Floors Ad Creatives.jpg
 /public/images/*.png
 /public/logos/veterans.png
 /public/logos/veterans 2.jpg
+/public/logos/estimation.png
