@@ -47,8 +47,9 @@ const heroImg = "/creatives/hero.jpg";
 const creatives = {
   pricing:   { src: "/creatives/c1.jpg", alt: "Zona Floors hardwood with honest up-front pricing: the price we quote is the price you pay" },
   financing: { src: "/creatives/c2.jpg", alt: "New floors with 0% interest financing for 12 months, before and after" },
-  speed:     { src: "/creatives/c3.jpg", alt: "From demo to done in 3 days: fast, clean, professional hardwood floor installation" },
+  speed:     { src: "/creatives/c7.jpg", alt: "Bored of your old grey carpet? Get new floors in 3 days. Before and after, with 10% off for veterans." },
   trust:     { src: "/creatives/c4.jpg", alt: "Local Phoenix Valley flooring contractors: real work, real accountability" },
+  discount:  { src: "/creatives/c9.jpg", alt: "Senior discounts on all flooring jobs, plus a thank-you discount for veterans. Book a free estimate today." },
   // Top-of-page lead-getters (highest-converting client creatives). Each is a
   // square sales graphic with a baked-in CTA; rendered as a clickable card to #lead-form.
   speed3day: { src: "/creatives/c5.jpg", alt: "New hardwood floors in 3 days, with 10% off for veterans and seniors. Book a free estimate today." },
@@ -104,10 +105,13 @@ const galleryPhotos = [
 // Interactive species selector. Clicking a card pre-selects it in the lead form.
 // Descriptors are generic wood-species facts, not internal sales claims.
 // Species swatch imagery supplied by client in /public/images.
+// Each card auto-crossfades between the wood swatch and a real Zona crew install
+// photo (watermark-removed + optimized under /public/images), and shows the crew
+// shot on hover. Crew photos client-supplied 2026-06-17.
 const species = [
-  { name: "White Oak", note: "Timeless & hard-wearing", img: "/images/whiteoak.jpg" },
-  { name: "Walnut", note: "Rich, premium tones", img: "/images/walnut.jpg" },
-  { name: "Maple", note: "Warm & budget-friendly", img: "/images/maple.jpg" },
+  { name: "White Oak", note: "Timeless & hard-wearing", img: "/images/whiteoak.jpg", crew: "/images/zona-whiteoak.jpg" },
+  { name: "Walnut", note: "Rich, premium tones", img: "/images/walnut.jpg", crew: "/images/zona-walnut.jpg" },
+  { name: "Maple", note: "Warm & budget-friendly", img: "/images/maple.jpg", crew: "/images/zona-maple.jpg" },
 ];
 
 const ba = siteConfig.beforeAfter;
@@ -164,9 +168,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         loading="eager"
         decoding="async"
         width="1600"
-        height="2134"
+        height="893"
         sizes="100vw"
-        class="absolute inset-0 -z-10 h-full w-full object-cover"
+        class="zf-kenburns absolute inset-0 -z-10 h-full w-full object-cover"
       />
       <!-- Light, top-anchored scrim: darker behind the copy, clearing toward the
            foreground so the actual hardwood floor stays visible. Text-shadow
@@ -194,7 +198,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row">
           <a href="#lead-form"
-             class={`rounded-xl bg-cta px-6 py-4 text-center text-lg font-extrabold text-white shadow-xl hover:bg-cta-dark sm:text-xl ${btnLift}`}>
+             class={`zf-sheen rounded-xl bg-cta px-6 py-4 text-center text-lg font-extrabold text-white shadow-xl hover:bg-cta-dark sm:text-xl ${btnLift}`}>
             Get My Free Estimate →
           </a>
           <a href={telHref(phones.primary)} data-track-call
@@ -383,7 +387,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
 
         <div data-reveal class="mt-12 flex flex-col items-center">
           <a href="#lead-form"
-             class={`inline-flex items-center gap-2 rounded-xl bg-pop px-8 py-4 text-lg font-extrabold uppercase tracking-wide text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
+             class={`zf-sheen inline-flex items-center gap-2 rounded-xl bg-pop px-8 py-4 text-lg font-extrabold uppercase tracking-wide text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
             Book My Free Estimate <span aria-hidden="true">→</span>
           </a>
           <p class="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-base text-white/90">
@@ -408,6 +412,9 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
       heading="We put our money where your floor is"
       subhead="Every Zona Floors hardwood install comes with these guarantees, in writing. No surprises, no games."
     />
+
+    <!-- ===================== DISCOUNT CREATIVE (senior + veterans) ===================== -->
+    <CreativeBanner src={creatives.discount.src} alt={creatives.discount.alt} bg="bg-brand/5" />
 
     <!-- ===================== PRICING CREATIVE ===================== -->
     <CreativeBanner src={creatives.pricing.src} alt={creatives.pricing.alt} bg="bg-white" />
@@ -438,16 +445,32 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
               data-reveal-delay={i + 1}
               class={`group flex flex-col overflow-hidden rounded-2xl border-2 border-brand/10 bg-white text-left hover:border-cta ${cardLift} ${btnLift}`}
             >
-              <span class="block overflow-hidden">
+              <span class="relative block aspect-[4/3] overflow-hidden">
                 <img
                   src={s.img}
                   alt={`${s.name} hardwood flooring`}
-                  width="320"
-                  height="240"
+                  width="440"
+                  height="330"
                   loading="lazy"
                   decoding="async"
-                  class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                <img
+                  src={s.crew}
+                  alt={`Zona Floors crew installing ${s.name} hardwood`}
+                  width="1100"
+                  height="600"
+                  loading="lazy"
+                  decoding="async"
+                  class="zf-swap absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={`animation-delay:${i * 3}s`}
+                />
+                <span
+                  class="zf-swap pointer-events-none absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-brand-dark/80 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white ring-1 ring-white/20"
+                  style={`animation-delay:${i * 3}s`}
+                >
+                  <span aria-hidden="true">🔨</span> Our crew, real installs
+                </span>
               </span>
               <span class="flex grow flex-col p-6">
                 <span class="text-2xl font-extrabold text-brand sm:text-3xl">{s.name}</span>
@@ -513,6 +536,45 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
 
     <!-- ===================== GALLERY ===================== -->
     <ProjectGallery heading="Hardwood floors we love to show off" photos={galleryPhotos} />
+
+    <!-- ===================== STYLED RESULTS SHOWCASE ===================== -->
+    <section class="overflow-hidden bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Picture your home, finished ✨</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
+            This is the kind of warm, magazine-worthy floor we install for Valley homeowners, every week.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-5 sm:grid-cols-2">
+          {[
+            { src: "/creatives/styled-1.jpg", label: "Light oak, sun-filled living room" },
+            { src: "/creatives/styled-2.jpg", label: "Rich, hand-scraped walnut tones" },
+          ].map((p, i) => (
+            <figure data-reveal data-reveal-delay={i + 1} class="group relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10">
+              <img
+                src={p.src}
+                alt={`Finished Zona Floors hardwood floor — ${p.label}`}
+                width="1200"
+                height="1600"
+                loading="lazy"
+                decoding="async"
+                class="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/85 to-transparent p-5 pt-14">
+                <span class="text-lg font-extrabold text-white sm:text-xl">{p.label}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-xl bg-cta px-7 py-4 text-lg font-extrabold text-white shadow-lg hover:bg-cta-dark sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
+        </div>
+      </div>
+    </section>
 
     <!-- ===================== BEFORE / AFTER (renders only with a real pair) ===================== -->
     {ba?.before && ba?.after && (
