@@ -25,7 +25,7 @@ async function fold(label, locator) {
 const checks = [
   await fold("H1", page.locator("h1")),
   await fold("Rating", page.getByText("5-Star Rated on Google")),
-  await fold("Offer", page.locator("main p", { hasText: "Free in-home estimate" })),
+  await fold("Offer", page.locator('img[src="/logos/estimate-seal.png"]')),
   await fold("CTA", page.getByRole("link", { name: "Get My Free Estimate" })),
 ];
 
