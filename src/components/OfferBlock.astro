@@ -1,6 +1,6 @@
 ---
 /**
- * OfferBlock — states the approved intake offer(s) plainly with its own CTA
+ * OfferBlock, states the approved intake offer(s) plainly with its own CTA
  * (claude.md page anatomy #4). Only APPROVED offers render. If none are
  * approved yet, the production build has already failed via config-assert; in
  * dev this renders a visible placeholder so the gap is obvious.
@@ -27,7 +27,7 @@ const phone = formatPhone(siteConfig.phones.primary);
       </ul>
     ) : (
       <p class="text-xl font-bold opacity-90">
-        [Offer REQUIRED — no approved offer in siteConfig.offers. Page will not ship.]
+        [Offer REQUIRED, no approved offer in siteConfig.offers. Page will not ship.]
       </p>
     )}
 

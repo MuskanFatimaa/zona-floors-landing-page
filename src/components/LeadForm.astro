@@ -1,6 +1,6 @@
 ---
 /**
- * LeadForm — residential lead capture (claude.md "Architecture" + "Forms").
+ * LeadForm, residential lead capture (claude.md "Architecture" + "Forms").
  *
  *  - Fields: name, phone, ZIP. Phone is the only thing that matters; no email.
  *  - Honeypot field (visually hidden, tabindex -1, aria-hidden) dropped server-side.
@@ -58,7 +58,7 @@ const guaranteeChips = showGuarantees ? approvedGuarantees().slice(0, 4) : [];
   <input type="hidden" name="page_slug" value={slug} />
   {ATTRIBUTION_PARAMS.map((p) => <input type="hidden" name={p} data-attr={p} value="" />)}
 
-  {/* Honeypot — real users never see or fill this. */}
+  {/* Honeypot, real users never see or fill this. */}
   <div class="zf-hp" aria-hidden="true">
     <label>
       Company
@@ -91,7 +91,7 @@ const guaranteeChips = showGuarantees ? approvedGuarantees().slice(0, 4) : [];
       />
       {/* Consent text adjacent to the phone field (non-negotiable #2). */}
       <p id="sms-consent" data-consent class="mt-2 text-xs leading-snug text-brand/60">
-        {consent || "[SMS consent text REQUIRED — supply siteConfig.consent.sms before launch]"}
+        {consent || "[SMS consent text REQUIRED, supply siteConfig.consent.sms before launch]"}
       </p>
     </label>
 

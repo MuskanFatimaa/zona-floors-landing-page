@@ -1,5 +1,5 @@
 /**
- * config-assert.ts — build-time gate.
+ * config-assert.ts, build-time gate.
  *
  * Imported by the root layout's server frontmatter and run only when
  * `import.meta.env.PROD` is true (i.e. during `astro build`). It throws if any
@@ -7,7 +7,7 @@
  * a page from shipping without an offer, consent text, license, conversion IDs,
  * brand colors, a speed-to-lead promise, review aggregates, or a domain.
  *
- * In `astro dev` it does not throw — it logs the same list as a warning so the
+ * In `astro dev` it does not throw, it logs the same list as a warning so the
  * scaffold remains workable while intake data is still being gathered.
  *
  * This module is server-only (layout frontmatter) and is never shipped to the
@@ -31,7 +31,7 @@ export function getRequiredIssues(): string[] {
   // Hours (trust element)
   need(c.business.hours.trim().length > 0, 'business.hours');
 
-  // At least one APPROVED offer — no page ships without an offer.
+  // At least one APPROVED offer, no page ships without an offer.
   need(approvedOffers().length > 0, 'offers (need ≥1 approved offer with text)');
 
   // Speed-to-lead promise
@@ -40,7 +40,7 @@ export function getRequiredIssues(): string[] {
   // SMS/TCPA consent text (renders adjacent to every phone field)
   need(c.consent.sms.trim().length > 0, 'consent.sms');
 
-  // Google Ads conversion tracking — NOT required to ship per client: leads are
+  // Google Ads conversion tracking, NOT required to ship per client: leads are
   // tracked via the GHL CRM webhook, not Google Ads conversions. gtag and the
   // trackConversion() helper degrade gracefully when these are empty (Layout only
   // loads gtag when an AW- ID is present). Re-enable if conversion tracking is added.
@@ -56,7 +56,7 @@ export function getRequiredIssues(): string[] {
   need(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(c.brand.primaryHex.trim()), 'brand.primaryHex');
   need(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(c.brand.ctaHex.trim()), 'brand.ctaHex');
 
-  // Review aggregates (from live Google profile — never fabricated). Not required
+  // Review aggregates (from live Google profile, never fabricated). Not required
   // to ship: no page renders a numeric rating (hero shows qualitative "5-Star
   // Rated on Google"), and the JSON-LD aggregateRating is added only when both are
   // present (see Layout.astro). Fill both with the real live numbers to enable it.
@@ -78,7 +78,7 @@ export function assertConfig(): void {
   if (issues.length === 0) return;
 
   const header =
-    `siteConfig is missing ${issues.length} REQUIRED value(s) — pages must not ship until these are supplied from intake:`;
+    `siteConfig is missing ${issues.length} REQUIRED value(s), pages must not ship until these are supplied from intake:`;
   const body = issues.map((i) => `  • ${i}`).join('\n');
   const message = `${header}\n${body}`;
 
@@ -87,6 +87,6 @@ export function assertConfig(): void {
     throw new Error(`\n\n[config-assert] ${message}\n`);
   } else {
     // Keep dev workable, but make the gap loud.
-    console.warn(`\n[config-assert] (dev — build will fail until resolved)\n${message}\n`);
+    console.warn(`\n[config-assert] (dev, build will fail until resolved)\n${message}\n`);
   }
 }

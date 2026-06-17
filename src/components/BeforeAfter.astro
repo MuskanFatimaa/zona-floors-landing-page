@@ -1,10 +1,10 @@
 ---
 /**
- * BeforeAfter — interactive before/after image comparison slider.
+ * BeforeAfter, interactive before/after image comparison slider.
  *
  * Both images fill the same fixed-aspect box; the "before" image is revealed by
  * a clip-path driven by a range input (keyboard-accessible) and pointer drag.
- * Renders nothing unless BOTH real images are supplied — we never fabricate a
+ * Renders nothing unless BOTH real images are supplied, we never fabricate a
  * "before" shot (claude.md rule #1).
  */
 interface Props {
@@ -34,9 +34,9 @@ const {
     data-ba
     class={`relative ${ratioClass} w-full select-none overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5`}
   >
-    <img src={after} alt={`${alt} — after`} loading="lazy" decoding="async"
+    <img src={after} alt={`${alt}, after`} loading="lazy" decoding="async"
          class="absolute inset-0 h-full w-full object-cover" />
-    <img src={before} alt={`${alt} — before`} loading="lazy" decoding="async" data-ba-before
+    <img src={before} alt={`${alt}, before`} loading="lazy" decoding="async" data-ba-before
          class="absolute inset-0 h-full w-full object-cover [clip-path:inset(0_50%_0_0)]" />
 
     {showLabels && (

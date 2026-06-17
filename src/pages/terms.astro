@@ -1,6 +1,6 @@
 ---
 /**
- * /terms — baseline terms of use (NAP from config).
+ * /terms, baseline terms of use (NAP from config).
  * NOTE: have the client's counsel review before launch.
  */
 import Layout from "@/layouts/Layout.astro";
@@ -12,7 +12,7 @@ const { business } = siteConfig;
 const effective = new Date().toISOString().slice(0, 10);
 ---
 
-<Layout title={`Terms of Use — ${business.displayName}`}>
+<Layout title={`Terms of Use, ${business.displayName}`}>
   <Header />
   <main class="mx-auto max-w-3xl px-4 py-12 text-brand/90">
     <h1 class="text-3xl font-extrabold text-brand">Terms of Use</h1>

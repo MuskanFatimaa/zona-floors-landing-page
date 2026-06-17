@@ -1,13 +1,13 @@
 ---
 /**
- * /wood-flooring — Hardwood Flooring Installation landing page (Google Ads).
+ * /wood-flooring, Hardwood Flooring Installation landing page (Google Ads).
  *
  * Message-matched to the hardwood ad group headlines: "Hardwood Flooring
  * Experts", "Expert installation for solid and engineered hardwood floors",
  * "Get a free project quote", "Licensed, insured, and locally owned in
  * Arizona", "Expert Wood Floor Acclimation", "precision craftsmanship".
  *
- * DATA STILL PENDING (intake — NOT fabricated here; layout is built to accept it):
+ * DATA STILL PENDING (intake, NOT fabricated here; layout is built to accept it):
  *   - aggregate rating + count  → qualitative "5-Star Rated on Google" only;
  *     numeric rating renders only once siteConfig supplies it.
  *   - verbatim Google review text + reviewer cities → cards show attributed
@@ -37,7 +37,7 @@ const offer = approvedOffers()[0]?.text ?? "";
 
 const metro = "Phoenix & the East Valley";
 
-// Hero background — client-supplied photo, watermark removed + web-optimized
+// Hero background, client-supplied photo, watermark removed + web-optimized
 // (see scripts that produced /creatives/hero.jpg from the raw hero.png).
 const heroImg = "/creatives/hardwood/hero.jpg";
 
@@ -120,7 +120,7 @@ const projectOptions = ["White Oak", "Walnut", "Maple", "Engineered hardwood", "
 // Team-at-work photos (real job-site photos from intake).
 const teamPhotos = photos.team.slice(0, 3);
 
-// Social proof — REAL verbatim Google reviews (siteConfig, confirmed 2026-06-17).
+// Social proof, REAL verbatim Google reviews (siteConfig, confirmed 2026-06-17).
 // Hardwood-specific first, then general crew reviews. Names shown first-name +
 // last initial only (intake: first names only, no cities on record).
 const fmtName = (n: string) => {
@@ -195,7 +195,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
         <div class="mt-6">
           <img
             src="/logos/estimate-seal.png"
-            alt="Zona Floors free in-home estimate seal — no pressure, no obligation"
+            alt="Zona Floors free in-home estimate seal, no pressure, no obligation"
             width="320" height="320" loading="eager" decoding="async"
             class="h-32 w-32 drop-shadow-xl sm:h-40 sm:w-40"
           />
@@ -367,7 +367,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
           </p>
         </div>
 
-        <!-- Interactive "what to expect" steps — hover/tap to expand the detail. -->
+        <!-- Interactive "what to expect" steps, hover/tap to expand the detail. -->
         <ol class="mt-12 grid gap-5 sm:grid-cols-3">
           {[
             { n: "1", icon: "🚪", title: "We come to you", body: "Pick a time that works. Our licensed crew arrives with samples in hand, no driving to a store." },
@@ -566,7 +566,7 @@ const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-
             <figure data-reveal data-reveal-delay={i + 1} class="group relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10">
               <img
                 src={p.src}
-                alt={`Finished Zona Floors hardwood floor — ${p.label}`}
+                alt={`Finished Zona Floors hardwood floor, ${p.label}`}
                 width="1200"
                 height="1600"
                 loading="lazy"

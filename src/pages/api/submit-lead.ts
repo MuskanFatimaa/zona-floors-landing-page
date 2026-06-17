@@ -27,7 +27,7 @@ function redirect(location: string, status = 303): Response {
 async function forwardToCrm(payload: unknown): Promise<void> {
   const url = import.meta.env.CRM_WEBHOOK_URL;
   if (!url) {
-    console.error("[submit-lead] CRM_WEBHOOK_URL is not set — lead NOT forwarded.");
+    console.error("[submit-lead] CRM_WEBHOOK_URL is not set, lead NOT forwarded.");
     return;
   }
   const controller = new AbortController();
@@ -51,7 +51,7 @@ export const POST: APIRoute = async ({ request }) => {
   const form = await request.formData();
   const get = (k: string) => (form.get(k) ?? "").toString().trim();
 
-  // 2. Honeypot — silently accept-and-discard.
+  // 2. Honeypot, silently accept-and-discard.
   if (get("company") !== "") {
     return redirect(THANK_YOU);
   }

@@ -1,9 +1,9 @@
 /**
- * tracking.ts — client-side attribution capture + conversion firing.
+ * tracking.ts, client-side attribution capture + conversion firing.
  *
  * Loaded as an Astro client island (`<script>` in components). It reads the
  * Google Ads IDs from `window.__ZF_TRACKING`, which the root layout injects
- * server-side from siteConfig — so we never bundle the whole config (or any
+ * server-side from siteConfig, so we never bundle the whole config (or any
  * server-only value) into the browser, keeping JS within the budget.
  *
  * Click IDs are captured on first touch and persisted to localStorage so they
@@ -61,7 +61,7 @@ export function captureClickIds(): Attribution {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
     } catch {
-      /* storage unavailable (private mode) — fail silently */
+      /* storage unavailable (private mode), fail silently */
     }
   }
   return stored;
@@ -84,11 +84,11 @@ export function trackConversion(action: 'form' | 'call' | 'sms'): void {
   const label = t?.labels?.[action];
 
   if (!t?.conversionId || !label) {
-    console.warn(`[tracking] conversion "${action}" skipped — Google Ads ID/label not configured.`);
+    console.warn(`[tracking] conversion "${action}" skipped, Google Ads ID/label not configured.`);
     return;
   }
   if (typeof window.gtag !== 'function') {
-    console.warn('[tracking] gtag not loaded — conversion not fired.');
+    console.warn('[tracking] gtag not loaded, conversion not fired.');
     return;
   }
   window.gtag('event', 'conversion', {

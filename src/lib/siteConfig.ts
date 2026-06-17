@@ -1,5 +1,5 @@
 /**
- * siteConfig.ts — single source of truth for all business facts, offers,
+ * siteConfig.ts, single source of truth for all business facts, offers,
  * tracking IDs, consent text, and brand assets.
  *
  * RULES (see claude.md):
@@ -7,7 +7,7 @@
  *  - Nothing here may be fabricated. Fields that intake did not supply are
  *    left empty ('' / null / []) and are caught by config-assert.ts, which
  *    fails `astro build` until they are filled. That is the mechanized
- *    "STOP and ask" — the build will not ship a page missing a required fact.
+ *    "STOP and ask", the build will not ship a page missing a required fact.
  *
  * The CRM webhook URL is intentionally NOT stored here: it is a server-only
  * destination read from the CRM_WEBHOOK_URL env var inside the API route, so
@@ -52,7 +52,7 @@ export interface Offer {
 }
 
 export interface Guarantee {
-  /** Machine key — also selects the icon in the Guarantees component. */
+  /** Machine key, also selects the icon in the Guarantees component. */
   key: string;
   /** Compact label for inline chips (e.g. the trust row under a form CTA). */
   short: string;
@@ -70,7 +70,7 @@ export interface ReviewQuote {
   name: string;
   /** Which service page this review belongs to. */
   service: 'hardwood' | 'vinyl' | 'tile' | 'laminate' | 'general';
-  /** Verbatim review text. REQUIRED before a review renders — do not paraphrase. */
+  /** Verbatim review text. REQUIRED before a review renders, do not paraphrase. */
   verbatim: string;
   /** Internal paraphrase from intake (NOT shown to visitors). Helps match the real review. */
   summary: string;
@@ -109,7 +109,7 @@ export interface SiteConfig {
     displayName: string;
     license: License;
     address: Address;
-    /** Business hours — becomes a trust element if early/weekend. */
+    /** Business hours, becomes a trust element if early/weekend. */
     hours: string;
   };
   phones: {
@@ -140,7 +140,7 @@ export interface SiteConfig {
     team: string[];
   };
   /** Optional before/after pair (same space, before + finished) for the
-   *  comparison slider. BOTH required to render — never fabricate a "before". */
+   *  comparison slider. BOTH required to render, never fabricate a "before". */
   beforeAfter?: { before: string; after: string };
   brand: {
     logo: string;
@@ -237,7 +237,7 @@ export const siteConfig: SiteConfig = {
   // The free in-home estimate is directly supported by the live hardwood ad
   // headlines ("Get Your Free Wood Floor Quote", "free project quote",
   // "Request an estimate") and is an intake candidate. PENDING final client
-  // sign-off — confirm exact wording before launch.
+  // sign-off, confirm exact wording before launch.
   offers: [
     {
       key: 'free-estimate',
@@ -247,7 +247,7 @@ export const siteConfig: SiteConfig = {
     },
   ],
 
-  // Conversion guarantees — COMMITTED & approved 2026-06-16 (intake.md, Chadwick
+  // Conversion guarantees, COMMITTED & approved 2026-06-16 (intake.md, Chadwick
   // Simpson). Financing is a SOFT mention only (no APR/term/lender stated) per
   // client direction 2026-06-16, pending full Reg Z disclosure before any hard
   // financing ad. Price anchor added to hardwood per client confirmation
@@ -265,7 +265,7 @@ export const siteConfig: SiteConfig = {
   ],
 
   // Project-completion promise (client-supplied 2026-06-16). NOTE: this is a
-  // project-duration value prop, NOT a lead-response time — rule #3 forbids a
+  // project-duration value prop, NOT a lead-response time, rule #3 forbids a
   // slow-response promise. Phrased so it never reads as "we reply in 3-7 days".
   speedToLead: 'Most projects are completed in just 3 to 7 days.',
 
@@ -279,7 +279,7 @@ export const siteConfig: SiteConfig = {
       platform: 'Google',
     },
     // Verbatim review text CONFIRMED by client intake 2026-06-17 (real Google
-    // reviews, first name + last initial only — no cities on record). `verbatim`
+    // reviews, first name + last initial only, no cities on record). `verbatim`
     // is what renders to visitors; `summary` is the internal matching note.
     quotes: [
       { name: 'Troy Lovelady', service: 'tile', verbatim: 'For years, we would come home to broken and bowing tile in our house. Our house has a crawl space with an uneven subfloor.', summary: 'Bowing/broken tile over an uneven crawl-space subfloor; took on the full first-floor tile project.', rating: 5 },
@@ -293,7 +293,7 @@ export const siteConfig: SiteConfig = {
       { name: 'Jim Skelnik', service: 'general', verbatim: 'Tom, Abraham and their crew did an excellent job! They had the demo and the new floors for the entire home done in 3 days.', summary: 'Full-home demo + new floors in 3 days (Tom & Abraham\'s crew).', rating: 5 },
       { name: 'Brandon McKay', service: 'general', verbatim: 'I was very impressed with the workmanship and quality of Zona Floors. Their crew was courteous, professional and took their craft seriously. The finished product looked amazing. Price was fair. I would easily use them again.', summary: 'Workmanship, courtesy, fair price; "would easily use them again".', rating: 5 },
       { name: 'Kristin A.', service: 'general', verbatim: 'One of the best companies I have ever worked with. They were punctual, followed up with regular communication, did not rush the installation at all. They were meticulous. I am so happy with my floor installation.', summary: 'Punctual, communicative, meticulous; very happy with the install.', rating: 5 },
-      { name: 'Auston', service: 'general', verbatim: 'Top notch professionals! Highly recommend Zona Floors — their entire team from sales to customer service to installation have been great to work with.', summary: 'Whole team (sales → service → install) great to work with.', rating: 5 },
+      { name: 'Auston', service: 'general', verbatim: 'Top notch professionals! Highly recommend Zona Floors, their entire team from sales to customer service to installation have been great to work with.', summary: 'Whole team (sales → service → install) great to work with.', rating: 5 },
       { name: 'Ashley R.', service: 'general', verbatim: 'We had a great experience working with Tom during the estimate process. He was prompt, knowledgeable, and took the time to walk through all the details with us.', summary: 'Great estimate experience with Tom; prompt and knowledgeable.', rating: 5 },
     ],
   },
@@ -328,7 +328,7 @@ export const siteConfig: SiteConfig = {
   },
 
   // REQUIRED for the before/after slider: a real matched pair (same room, old
-  // floor → finished hardwood). Intake supplied none — left empty so nothing
+  // floor → finished hardwood). Intake supplied none, left empty so nothing
   // fabricated ships. Fill both to make the slider appear.
   beforeAfter: {
     // Real matched pair (same room: old carpet → new hardwood), client-supplied
@@ -340,13 +340,13 @@ export const siteConfig: SiteConfig = {
   brand: {
     logo: `${ASSET_BASE}/6a21a870bf33b4d0d048ecf6.jpg`,
     // Extracted from the logo (Arizona-flag identity). Kept in sync with global.css @theme.
-    primaryHex: '#194B86', // mountain blue — structure/headings
-    ctaHex: '#CE1126',     // Arizona-flag red — calls to action
+    primaryHex: '#194B86', // mountain blue, structure/headings
+    ctaHex: '#CE1126',     // Arizona-flag red, calls to action
   },
 
   tracking: {
     googleAds: {
-      conversionId: '', // REQUIRED — AW-XXXXXXXXX
+      conversionId: '', // REQUIRED, AW-XXXXXXXXX
       labels: {
         form: '', // REQUIRED
         call: '', // REQUIRED

@@ -1,5 +1,5 @@
 /**
- * reveal.ts — dependency-free scroll-reveal.
+ * reveal.ts, dependency-free scroll-reveal.
  *
  * Sections marked `data-reveal` fade/slide in as they enter the viewport. The
  * animation itself is defined in global.css and only exists inside a

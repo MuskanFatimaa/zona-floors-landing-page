@@ -17,14 +17,14 @@ const { business, phones, speedToLead } = siteConfig;
 const phone = formatPhone(phones.primary);
 ---
 
-<Layout title={`Thank You — ${business.displayName}`}>
+<Layout title={`Thank You, ${business.displayName}`}>
   <Header />
 
   <main class="mx-auto max-w-2xl px-4 py-12 text-center">
-    <h1 class="text-3xl font-extrabold text-brand">Thank you — we got your request.</h1>
+    <h1 class="text-3xl font-extrabold text-brand">Thank you, we got your request.</h1>
 
     <p class="mt-4 text-xl text-brand/80">
-      {speedToLead || "[Speed-to-lead promise REQUIRED — supply siteConfig.speedToLead]"}
+      {speedToLead || "[Speed-to-lead promise REQUIRED, supply siteConfig.speedToLead]"}
     </p>
 
     <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -38,7 +38,7 @@ const phone = formatPhone(phones.primary);
       </a>
     </div>
 
-    <!-- Optional qualifiers — post as a contact update, not a new lead. -->
+    <!-- Optional qualifiers, post as a contact update, not a new lead. -->
     <form method="POST" action="/api/submit-lead" data-qualify-form
           class="mt-10 rounded-2xl bg-white p-5 text-left shadow-lg ring-1 ring-black/5">
       <h2 class="text-xl font-bold text-brand">Help us prep your quote (optional)</h2>

@@ -26,7 +26,7 @@ const adsId = tracking.googleAds.conversionId.trim();
 const clarityId = tracking.clarityId.trim();
 const canonical = domain ? `https://${domain}${Astro.url.pathname}` : undefined;
 
-// LocalBusiness JSON-LD — only includes facts we actually have (never fabricated).
+// LocalBusiness JSON-LD, only includes facts we actually have (never fabricated).
 const jsonLd: Record<string, unknown> = {
   "@context": "https://schema.org",
   "@type": "HomeAndConstructionBusiness",

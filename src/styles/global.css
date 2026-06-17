@@ -6,25 +6,25 @@
 @import "@fontsource-variable/dm-sans/index.css";
 @import "@fontsource-variable/fraunces/index.css";
 /* Tile page identity (see .tile-theme below): Bricolage Grotesque display +
-   Manrope body — distinct from the wood page's Fraunces/DM Sans. */
+   Manrope body, distinct from the wood page's Fraunces/DM Sans. */
 @import "@fontsource-variable/bricolage-grotesque/index.css";
 @import "@fontsource-variable/manrope/index.css";
 
 /*
- * Brand theme — derived from the Zona Floors logo (Arizona state-flag identity:
+ * Brand theme, derived from the Zona Floors logo (Arizona state-flag identity:
  * blue mountains, red/gold rays, black base, copper star).
  *
  * --color-brand / --color-cta are kept in sync with siteConfig.brand
  * (primaryHex / ctaHex).
  */
 @theme {
-  --color-brand: #194b86;       /* mountain blue — structure, headings (= primaryHex) */
-  --color-brand-dark: #0c2e52;  /* deep blue — footer, dark sections */
-  --color-cta: #ce1126;         /* Arizona-flag red — calls to action (= ctaHex) */
+  --color-brand: #194b86;       /* mountain blue, structure, headings (= primaryHex) */
+  --color-brand-dark: #0c2e52;  /* deep blue, footer, dark sections */
+  --color-cta: #ce1126;         /* Arizona-flag red, calls to action (= ctaHex) */
   --color-cta-dark: #a30e1e;    /* pressed/hover CTA */
-  --color-gold: #f4b41a;        /* flag-ray gold — star ratings, accents */
-  --color-pop: #c6f000;         /* electric lime — flashy eye-catch accent (from brand creatives) */
-  --color-ink: #15233a;         /* body text — near-black with a blue cast */
+  --color-gold: #f4b41a;        /* flag-ray gold, star ratings, accents */
+  --color-pop: #c6f000;         /* electric lime, flashy eye-catch accent (from brand creatives) */
+  --color-ink: #15233a;         /* body text, near-black with a blue cast */
 
   /* Premium type. Headings use the display family (see h1-h3 rule below). */
   --font-sans: "DM Sans Variable", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -79,13 +79,13 @@ h3 {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* Light halo for DARK text over a bright photo — keeps copy legible without
+/* Light halo for DARK text over a bright photo, keeps copy legible without
    putting any darkening overlay on the image itself. */
 .text-shadow-glow {
   text-shadow: 0 1px 16px rgba(255, 255, 255, 0.95), 0 0 5px rgba(255, 255, 255, 0.95);
 }
 
-/* Visually-hidden honeypot field (LeadForm). Not display:none — bots skip those. */
+/* Visually-hidden honeypot field (LeadForm). Not display:none, bots skip those. */
 .zf-hp {
   position: absolute !important;
   left: -9999px !important;
@@ -119,7 +119,7 @@ h3 {
 /*
  * Species "Choose your floor" auto-swap: a real Zona crew install photo
  * crossfades over the wood swatch on a loop, and stays shown on hover.
- * Base (reduced-motion): swatch by default, crew on hover only — no looping.
+ * Base (reduced-motion): swatch by default, crew on hover only, no looping.
  */
 .zf-swap { opacity: 0; transition: opacity 0.5s ease; }
 .group:hover .zf-swap { opacity: 1; }
@@ -134,7 +134,7 @@ h3 {
   /* Hover overrides the loop and pins the crew photo visible. */
   .group:hover .zf-swap { animation: none; opacity: 1; }
 
-  /* Hero: slow Ken Burns zoom for a premium, alive feel (no CLS — transform only). */
+  /* Hero: slow Ken Burns zoom for a premium, alive feel (no CLS, transform only). */
   @keyframes zfKenBurns {
     from { transform: scale(1); }
     to   { transform: scale(1.08); }
@@ -159,7 +159,7 @@ h3 {
 }
 
 /*
- * TILE PAGE THEME — scoped to .tile-theme (the /tile-flooring <main>) so the
+ * TILE PAGE THEME, scoped to .tile-theme (the /tile-flooring <main>) so the
  * wood page is untouched. Same FloorDaddy energy, different visual identity:
  *   - Bricolage Grotesque headings + Manrope body (vs the wood serif/DM Sans).
  *   - Crisper, more "architectural" corners (tile = grid/geometry).
@@ -169,11 +169,11 @@ h3 {
  */
 .tile-theme {
   /* Redefining these CSS vars cascades to every bg-pop/bg-cta/text-brand utility. */
-  --color-pop: #ff2e93;        /* bright neon pink — small accents, CTAs */
-  --color-cta: #d61f7a;        /* deep magenta — large fills / sections (was red) */
+  --color-pop: #ff2e93;        /* bright neon pink, small accents, CTAs */
+  --color-cta: #d61f7a;        /* deep magenta, large fills / sections (was red) */
   --color-cta-dark: #ab1561;
-  --color-brand: #0f3d6b;      /* deep blue — structure/headings */
-  --color-brand-dark: #06203a; /* deep navy — dark sections */
+  --color-brand: #0f3d6b;      /* deep blue, structure/headings */
+  --color-brand-dark: #06203a; /* deep navy, dark sections */
   font-family: "Manrope Variable", var(--font-sans);
 }
 .tile-theme h1,
@@ -200,7 +200,7 @@ h3 {
     linear-gradient(to bottom, color-mix(in srgb, var(--color-brand) 12%, transparent) 1.5px, transparent 1.5px);
   background-size: 46px 46px;
 }
-/* Bold blue+pink checkerboard — used as a mosaic frame (via padding) and dividers. */
+/* Bold blue+pink checkerboard, used as a mosaic frame (via padding) and dividers. */
 .tile-theme .tile-frame {
   background-color: var(--color-brand);
   background-image: conic-gradient(

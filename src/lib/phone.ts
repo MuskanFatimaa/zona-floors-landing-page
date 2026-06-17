@@ -1,5 +1,5 @@
 /**
- * phone.ts — the single canonical phone format used sitewide.
+ * phone.ts, the single canonical phone format used sitewide.
  *
  * claude.md non-negotiable #6: every rendered phone number uses the format
  * (XXX) XXX-XXXX. The GHL/CallRail pool-swap script matches on this exact
