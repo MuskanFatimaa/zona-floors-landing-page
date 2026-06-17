@@ -5,6 +5,9 @@
    DM Sans for body. */
 @import "@fontsource-variable/dm-sans/index.css";
 @import "@fontsource-variable/fraunces/index.css";
+/* Sora — geometric/modern display face used to give the tile page its own
+   identity (see .tile-theme below), distinct from the wood page's serif. */
+@import "@fontsource-variable/sora/index.css";
 
 /*
  * Brand theme — derived from the Zona Floors logo (Arizona state-flag identity:
@@ -146,4 +149,27 @@ h3 {
     animation: zfSheen 6.5s ease-in-out infinite;
     pointer-events: none;
   }
+}
+
+/*
+ * TILE PAGE THEME — scoped to .tile-theme (the /tile-flooring <main>) so the
+ * wood page is untouched. Same FloorDaddy energy, different visual identity:
+ *   - Headings in Sora (geometric/modern) instead of Fraunces (serif).
+ *   - Crisper, more "architectural" corners (tile = grid/geometry).
+ *   - Section accent bars become a gold->red gradient instead of flat gold.
+ * Scoped overrides win on specificity (.tile-theme .x = 0,2,0 > .x = 0,1,0).
+ */
+.tile-theme h1,
+.tile-theme h2,
+.tile-theme h3 {
+  font-family: "Sora Variable", var(--font-sans);
+  letter-spacing: -0.03em;
+}
+.tile-theme .rounded-3xl { border-radius: 0.625rem; }
+.tile-theme .rounded-2xl { border-radius: 0.5rem; }
+.tile-theme .rounded-xl  { border-radius: 0.375rem; }
+/* Flat gold underline accents -> gold→red gradient, a touch bolder. */
+.tile-theme .h-1.bg-gold {
+  height: 0.375rem;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-cta));
 }
