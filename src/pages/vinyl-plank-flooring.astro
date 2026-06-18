@@ -1,0 +1,1039 @@
+---
+/**
+ * /vinyl-plank-flooring, Luxury Vinyl Plank (LVP) Installation landing page (Google Ads).
+ *
+ * THIRD distinct visual identity (wood = serif/gold, tile = Bricolage/pink):
+ * vinyl = Sora + Plus Jakarta Sans on a slate/charcoal base with an electric-blue
+ * NEON pop, plank-seam motifs, a pulsing neon glow + a scrolling marquee offer
+ * ticker. All scoped to .vinyl-theme (see global.css); the wood/tile pages are
+ * untouched.
+ *
+ * Message-matched to the vinyl ad group ("Vinyl Plank Flooring", "Luxury Vinyl
+ * Plank Install", "Waterproof LVP Flooring").
+ *
+ * Client-branded vinyl promo creatives + a real before/after pair are now
+ * supplied (under /creatives/vinyl) and used via <CreativeBanner>/<BeforeAfter>.
+ * NO vinyl-specific reviews on record -> general verbatim Google reviews only
+ * (never fabricated).
+ */
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import StickyMobileBar from "@/components/StickyMobileBar.astro";
+import LeadForm from "@/components/LeadForm.astro";
+import ProcessSteps from "@/components/ProcessSteps.astro";
+import Guarantees from "@/components/Guarantees.astro";
+import CreativeBanner from "@/components/CreativeBanner.astro";
+import BeforeAfter from "@/components/BeforeAfter.astro";
+import { siteConfig, approvedOffers, approvedGuarantees, readyReviews } from "@/lib/siteConfig";
+import { formatPhone, telHref, smsHref } from "@/lib/phone";
+
+const SLUG = "vinyl-plank-flooring";
+const { phones, business, serviceArea } = siteConfig;
+const phone = formatPhone(phones.primary);
+const offer = approvedOffers()[0]?.text ?? "";
+
+const metro = "Phoenix & the East Valley";
+
+// A/B-testable hero headings. Each follows a proven local-service conversion
+// pattern (authority, benefit, offer) and every variant contains the primary
+// keyword "Vinyl Plank Flooring" + a Phoenix location (CLAUDE.md #5: one H1,
+// keyword + location). Variant A is the server-rendered CONTROL (keeps the
+// mobile gate green). A visitor lands on a variant via ?v=a|b|c (read client-
+// side below); the active variant is posted with every lead (heading_variant)
+// and tagged to Clarity so conversions are attributed to the heading that won.
+const headingVariants = {
+  a: {
+    pre: "Vinyl Plank Flooring in", accent: "Phoenix & the East Valley", post: "",
+    sub: "Waterproof, scratch-proof, and installed dead-flat by a licensed local crew.",
+  },
+  b: {
+    pre: "Phoenix's Waterproof", accent: "Vinyl Plank Flooring", post: "Pros",
+    sub: "Floors tough enough for kids, pets, and Arizona summers.",
+  },
+  c: {
+    pre: "Get Waterproof", accent: "Vinyl Plank Flooring", post: "in Phoenix",
+    sub: "Free in-home estimate. Most jobs done in just 3 to 7 days.",
+  },
+};
+const heroVariant = headingVariants.a;
+
+// Snappy, scannable hero value-prop chips (icons rendered via set:html).
+const valueProps = [
+  { label: "100% Waterproof", icon: '<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 11-12 0c0-4.5 6-11 6-11z" stroke-linejoin="round"/></svg>' },
+  { label: "Pet & kid proof", icon: '<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
+  { label: "Done in 3 to 7 days", icon: '<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke-linejoin="round"/></svg>' },
+];
+
+// Real Zona LVP project photos (client-supplied, watermark removed + optimized
+// -> /creatives/vinyl).
+const img = {
+  hero: "/creatives/vinyl/hero.jpg",            // fully furnished bedroom on grey wood-look LVP
+  hall: "/creatives/vinyl/hall.jpg",            // low-angle hallway, grey wood-look LVP detail
+  greatRoom: "/creatives/vinyl/great-room.jpg", // great room with bookshelves, wood-look LVP
+  lightPlank: "/creatives/vinyl/light-plank.jpg", // light wood-look LVP plank detail
+  team: "/creatives/vinyl/team.jpg",            // a Zona Team installer click-locking a plank
+  pet: "/creatives/vinyl/pet.jpg",              // puppy napping on LVP (pet-proof proof shot)
+  toddler: "/creatives/vinyl/toddler.jpg",      // toddler crayons & toys on LVP (kid-proof)
+};
+
+// Client-branded vinyl promo creatives (square, baked-in CTAs). Distributed
+// across the page; each links to the lead form via <CreativeBanner>.
+const creatives = {
+  dream:    { src: "/creatives/vinyl/ad-creative-1.jpg", alt: "Dream flooring for your dream bedroom. 0% financing available and 10% off for veterans. Book a free estimate today." },
+  senior:   { src: "/creatives/vinyl/ad-creative-2.jpg", alt: "Senior discounts on all flooring jobs, plus a thank-you discount for veterans. Book a free estimate today." },
+  speed3:   { src: "/creatives/vinyl/ad-creative-3.jpg", alt: "New vinyl floors in 3 days, with 10% off for veterans and seniors. Get a free quote today." },
+  giveback: { src: "/creatives/vinyl/ad-creative-4.jpg", alt: "Floors done in 3 days, free in-home estimation, and 10% off for military, seniors and first responders. Zona Floors gives back." },
+  carpet:   { src: "/creatives/vinyl/ad-creative-5.jpg", alt: "Sick of your old, worn out carpet? Get new floors in 3 days. Before and after, with 10% off for veterans." },
+};
+
+// Real before/after pair (same bedroom: old carpet -> furnished LVP). Branded
+// BEFORE/AFTER labels + logo are baked into the squares.
+const beforeAfter = { before: "/creatives/vinyl/before.jpg", after: "/creatives/vinyl/after.jpg" };
+
+// FAQ, lead-friction reducers, written from approved intake facts + category truths only.
+const faqs = [
+  { q: "Is luxury vinyl plank really waterproof?", a: "Yes. Quality LVP has a waterproof core, which is exactly why it belongs in Arizona kitchens, baths, and laundry rooms. We still moisture-test and prep the subfloor first so it performs for years, not just on day one." },
+  { q: "Can you install vinyl plank over my existing tile or concrete?", a: "Often, yes. Floating click-lock planks can go over many existing hard surfaces. We check the subfloor during your free estimate, level any low or high spots, and tell you straight, in writing, whether yours needs prep or removal first." },
+  { q: "Will vinyl plank hold up to pets, kids, and heavy traffic?", a: "That's where LVP shines. A tough wear layer shrugs off pet nails, dropped toys, and busy-family traffic, so it keeps looking new far longer than you'd expect." },
+  { q: "How much does vinyl plank installation cost?", a: "Every home is different, so you get a clear written price at a free in-home estimate, honest up-front pricing, and a price-match guarantee. The estimate is the price. Quality flooring installed from as low as $2.40 per square foot on qualifying jobs; ask us for details." },
+  { q: "How long does a vinyl floor take?", a: "Most projects are completed in just 3 to 7 days, depending on size and prep. You'll get a firm timeline with your written quote." },
+  { q: "Are you licensed and insured?", a: `Yes. We're a licensed Arizona contractor (${business.license.number}), locally owned, with our own installers on every job, never day-labor subs.` },
+];
+
+// Three short guarantee callouts for the hero (checkmark row, desktop only).
+const heroGuarantees = approvedGuarantees().filter((g) =>
+  ["warranty", "upfront", "price-match"].includes(g.key),
+);
+
+// Real, non-fabricated figures for the stats band.
+const stats = [
+  { num: "4.9", unit: "★", label: "Google rating" },
+  { num: "103", unit: "+", label: "Google reviews" },
+  { num: "24", unit: "mo", label: "Workmanship warranty" },
+  { num: "3-7", unit: "", label: "Day installs" },
+];
+
+// LVP-specific craft strengths, each with a relevant icon (rendered below).
+const vinylFeatures = [
+  { icon: "droplet", tone: "bg-pop",   title: "100% waterproof core",      body: "Spills, pet accidents, and humidity won't faze it. A waterproof core means LVP belongs in kitchens, baths, and laundry rooms." },
+  { icon: "shield",  tone: "bg-cta",   title: "Scratch & dent resistant",  body: "A tough wear layer shrugs off pet nails, furniture, and busy-family traffic, so it still looks new years from now." },
+  { icon: "level",   tone: "bg-brand", title: "Dead-flat subfloor prep",   body: "We moisture-test and level the subfloor first, so planks never peak, gap, or telegraph every bump underneath." },
+  { icon: "comfort", tone: "bg-gold",  title: "Quieter, warmer underfoot", body: "Engineered planks with the right underlayment soften footsteps and feel warmer than tile on cool desert mornings." },
+];
+
+const steps = [
+  { title: "Free in-home estimate", body: "We measure, talk colors, plank width & layout, and give you a clear written quote." },
+  { title: "Moisture-test & level", body: "We check the subfloor for moisture, then level it flat before a single plank goes down." },
+  { title: "Click-lock install & finish", body: "Tight, staggered planks, clean transitions and trim, then we walk the floor with you." },
+];
+
+// Interactive look selector using real Zona LVP projects. Clicking a card
+// pre-selects it in the lead form (shared script at the bottom).
+const looks = [
+  { name: "Light wood-look", note: "Bright, airy, easy to match", img: img.lightPlank },
+  { name: "Cool grey plank", note: "Modern, clean, on-trend", img: img.hall },
+  { name: "Greige wood-look", note: "Soft, contemporary depth", img: img.greatRoom },
+];
+
+const projectOptions = ["SPC / rigid core (waterproof)", "Waterproof wood-look", "Stone & concrete look", "Glue-down LVP", "Other / not sure"];
+
+// Social proof, REAL verbatim Google reviews. No vinyl-specific reviews on record,
+// so use product-neutral general reviews (never a fabricated vinyl quote).
+const fmtName = (n: string) => {
+  const [first, second] = n.trim().split(/\s+/);
+  return second ? `${first} ${second[0]}.` : first;
+};
+const proof = readyReviews("general")
+  .slice(0, 5)
+  .map((r) => ({ name: fmtName(r.name), note: r.verbatim }));
+
+const LOGO_FILES: Record<string, { file: string; w: number; h: number }> = {
+  Google: { file: "/logos/google.svg", w: 28, h: 28 },
+  Yelp: { file: "/logos/yelp.svg", w: 28, h: 28 },
+  Angi: { file: "/logos/angi-sm.png", w: 46, h: 28 },
+  BBB: { file: "/logos/bbbsvg.svg", w: 16, h: 28 },
+  Nextdoor: { file: "/logos/nextdoor.svg", w: 28, h: 28 },
+};
+
+const ctaMicrocopy = `Licensed ${business.license.number} · Locally owned · No pressure, ever`;
+const privacyNote = "Your info goes straight to our team. No spam, no third parties.";
+
+const btnLift =
+  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pop/70 focus-visible:ring-offset-2";
+const cardLift = "transition-all duration-200 hover:-translate-y-1 hover:shadow-lg";
+
+// Offer ticker items (marquee). Two copies are rendered in the markup for a
+// seamless -50% loop.
+const tickerItems = [
+  "100% waterproof luxury vinyl plank",
+  "0% financing for 12 months",
+  "10% off veterans, seniors & first responders",
+  "Free in-home estimate",
+  "Most installs done in 3 to 7 days",
+];
+---
+
+<Layout
+  title="Vinyl Plank Flooring in Phoenix & the East Valley | Zona Floors"
+  description="Waterproof luxury vinyl plank (LVP) installation by a licensed, locally-owned Arizona crew. Scratch-resistant, pet-proof, installed dead-flat. Free in-home estimate."
+>
+  <Header />
+
+  <main class="vinyl-theme">
+    <!-- ===================== MARQUEE OFFER RIBBON ===================== -->
+    <a href="#lead-form" class="zf-marquee-wrap group block overflow-hidden border-y border-pop/40 bg-brand-dark py-2 text-white">
+      <div class="zf-marquee" aria-hidden="true">
+        {[0, 1].map(() => (
+          <ul class="flex shrink-0 items-center">
+            {tickerItems.map((t) => (
+              <li class="flex items-center whitespace-nowrap px-6 text-sm font-extrabold uppercase tracking-wide">
+                <span class="mr-3 text-pop">◆</span>{t}
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+      <span class="sr-only">Waterproof luxury vinyl plank, 0% financing for 12 months, 10% off veterans and seniors, free in-home estimate, most installs done in 3 to 7 days. Book now.</span>
+    </a>
+
+    <!-- ===================== HERO (full-bleed bedroom bg, slate + neon) ===================== -->
+    <section class="relative isolate overflow-hidden bg-brand-dark text-white">
+      <!-- Furnished-bedroom hero photo as the full-bleed background. -->
+      <img
+        src={img.hero}
+        alt="Fully furnished bedroom with warm grey wood-look luxury vinyl plank flooring installed by Zona Floors"
+        fetchpriority="high" loading="eager" decoding="async"
+        width="1400" height="1867" sizes="100vw"
+        class="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+      />
+      <!-- Lighter slate overlays so more of the photo shows while white text stays legible. -->
+      <div class="absolute inset-0 -z-10 bg-brand-dark/35" aria-hidden="true"></div>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-r from-brand-dark/85 via-brand-dark/45 to-transparent" aria-hidden="true"></div>
+      <div class="plank-lines pointer-events-none absolute inset-0 -z-10 opacity-30" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-6xl px-5 pb-12 pt-8 sm:pt-10 lg:pb-24">
+        <!-- Copy block. -->
+        <div class="max-w-2xl">
+          <p data-reveal class="inline-flex flex-col items-start gap-1 rounded-2xl bg-white/10 px-4 py-2 text-sm font-bold text-white ring-1 ring-white/15 backdrop-blur sm:flex-row sm:items-center sm:gap-2 sm:rounded-full">
+            <span class="text-base leading-none text-gold" aria-hidden="true">★★★★★</span>
+            <span class="inline-flex items-center gap-1.5">
+              <img src="/logos/google.svg" alt="Google" width="18" height="18" class="h-4 w-4" />
+              5-Star Rated on Google · 4.9 · 103+ reviews
+            </span>
+          </p>
+
+          <h1 class="mt-5 text-3xl font-extrabold leading-[1.04] sm:text-5xl" data-h1>
+            <span data-h1-pre>{heroVariant.pre}</span>
+            <span class="text-pop" data-h1-accent>{heroVariant.accent}</span>
+            <span data-h1-post>{heroVariant.post}</span>
+          </h1>
+          <p class="mt-4 max-w-md text-lg font-semibold text-white/85 sm:text-xl" data-hero-sub>{heroVariant.sub}</p>
+
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a href="#lead-form"
+               class={`zf-sheen rounded-lg bg-pop px-7 py-4 text-center text-lg font-extrabold text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
+              Get My Free Estimate →
+            </a>
+            <a href={telHref(phones.primary)} data-track-call
+               class={`flex items-center justify-center gap-2 rounded-lg border-2 border-white/25 bg-white/5 px-7 py-4 text-center text-lg font-extrabold text-white hover:bg-white/10 sm:text-xl ${btnLift}`}>
+              <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5.5C3 14 10 21 18.5 21a2 2 0 002-1.7l.3-2a1.5 1.5 0 00-1-1.6l-3-1a1.5 1.5 0 00-1.6.4l-1 1a12 12 0 01-4.7-4.7l1-1a1.5 1.5 0 00.4-1.6l-1-3A1.5 1.5 0 005.2 3l-2 .3A2 2 0 003 5.5z" stroke-linejoin="round"/></svg>
+              Call {phone}
+            </a>
+          </div>
+
+          <!-- Offer / estimate-seal trust row (kept above the mobile fold). -->
+          <div class="mt-6 flex items-center gap-3">
+            <img
+              src="/logos/estimate-seal.png"
+              alt="Zona Floors free in-home estimate seal, no pressure, no obligation"
+              width="220" height="220" loading="eager" decoding="async"
+              class="h-16 w-16 shrink-0 drop-shadow-lg sm:h-20 sm:w-20"
+            />
+            <p class="text-base font-semibold text-white/85 sm:text-lg">
+              Free in-home estimate. We bring the samples to you, no pressure, no obligation.
+            </p>
+          </div>
+
+          <!-- Snappy value-prop chips (icons). -->
+          <ul class="mt-5 flex flex-wrap gap-2">
+            {valueProps.map((vp, i) => (
+              <li data-reveal data-reveal-delay={(i % 3) + 1} class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-bold text-white ring-1 ring-white/15 backdrop-blur">
+                <span class="text-pop" set:html={vp.icon}></span>
+                {vp.label}
+              </li>
+            ))}
+          </ul>
+
+          <!-- Checkmark guarantee callouts (desktop only, keeps mobile hero compact). -->
+          <ul class="mt-7 hidden max-w-xl flex-wrap items-center gap-x-6 gap-y-2 sm:flex">
+            {heroGuarantees.map((g) => (
+              <li class="inline-flex items-center gap-2 text-sm font-bold text-white sm:text-base">
+                <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-pop text-brand-dark">
+                  <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true">
+                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                {g.short}
+              </li>
+            ))}
+          </ul>
+
+          <!-- Trust badge row. -->
+          <ul class="mt-7 flex flex-wrap items-center gap-2.5 sm:gap-3">
+            {siteConfig.badges.map((b) => {
+              const logo = LOGO_FILES[b];
+              return logo ? (
+                <li class="flex h-11 items-center justify-center rounded-lg bg-white px-4 shadow-sm ring-1 ring-black/5">
+                  <img src={logo.file} alt={`Reviewed on ${b}`} width={logo.w} height={logo.h} loading="eager" decoding="async" class="h-6 w-auto" />
+                </li>
+              ) : null;
+            })}
+          </ul>
+          <p class="mt-5 text-sm text-white/55">{ctaMicrocopy}</p>
+        </div>
+
+      </div>
+
+      <!-- Floating waterproof badge over the bedroom photo (desktop). -->
+      <span class="zf-bob absolute bottom-10 right-8 -rotate-2 hidden items-center gap-2 rounded-lg bg-pop px-4 py-2 text-base font-extrabold uppercase tracking-wide text-brand-dark shadow-xl ring-2 ring-brand-dark lg:inline-flex">
+        <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-dark/60"></span>
+          <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-dark"></span>
+        </span>
+        100% Waterproof
+      </span>
+
+      <div class="plank-bar absolute inset-x-0 bottom-0 h-1" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===================== LOGOS TRUST STRIP ===================== -->
+    <section class="border-b border-brand/10 bg-white">
+      <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 py-6 sm:flex-row sm:justify-center sm:gap-8">
+        <p class="text-sm font-extrabold uppercase tracking-[0.15em] text-brand/60">
+          <span class="text-gold" aria-hidden="true">★★★★★</span> Rated 5 stars across
+        </p>
+        <ul class="flex flex-wrap items-center justify-center gap-x-7 gap-y-4">
+          {siteConfig.badges.map((b) => {
+            const logo = LOGO_FILES[b];
+            return logo ? (
+              <li class="flex items-center">
+                <img
+                  src={logo.file}
+                  alt={`Reviewed on ${b}`}
+                  width={logo.w}
+                  height={logo.h}
+                  loading="eager"
+                  decoding="async"
+                  class="h-7 w-auto transition-transform duration-300 hover:-translate-y-0.5 hover:scale-105"
+                />
+              </li>
+            ) : null;
+          })}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== RECENT PROJECTS ===================== -->
+    <section class="bg-white">
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
+        <div data-reveal class="mx-auto max-w-2xl text-center">
+          <span class="text-sm font-extrabold uppercase tracking-[0.2em] text-cta">Recent projects</span>
+          <h2 class="mt-3 text-3xl font-extrabold text-brand sm:text-4xl">Vinyl plank installs across the Valley</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-4 text-xl text-brand/70 sm:text-2xl">Real Zona Floors LVP projects, waterproof and built to last.</p>
+        </div>
+        <div class="mt-12 grid gap-5 sm:grid-cols-3">
+          {[
+            { src: img.hero, label: "Furnished bedroom retreat" },
+            { src: img.greatRoom, label: "Wood-look LVP great room" },
+            { src: img.hall, label: "Seamless plank hallway" },
+          ].map((p, i) => (
+            <a
+              href="#lead-form"
+              data-reveal
+              data-reveal-delay={i + 1}
+              class={`group relative block overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/10 ${btnLift}`}
+            >
+              <img
+                src={p.src}
+                alt={`Finished Zona Floors vinyl plank project, ${p.label}`}
+                width="600" height="800" loading="lazy" decoding="async"
+                class="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/85 to-transparent p-5 pt-14 text-left">
+                <span class="text-lg font-extrabold text-white sm:text-xl">{p.label}</span>
+              </figcaption>
+            </a>
+          ))}
+        </div>
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get your free estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATS BAND ===================== -->
+    <section class="relative bg-gradient-to-br from-brand-dark to-brand text-white">
+      <div class="plank-lines pointer-events-none absolute inset-0 opacity-30" aria-hidden="true"></div>
+      <div class="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-10 px-5 py-14 sm:grid-cols-4 sm:py-16">
+        {stats.map((s, i) => (
+          <div data-reveal data-reveal-delay={(i % 3) + 1} class="text-center">
+            <div class="text-5xl font-extrabold leading-none tracking-tight text-pop sm:text-6xl">
+              <span data-countup={s.num}>{s.num}</span><span class="text-gold">{s.unit}</span>
+            </div>
+            <div class="mt-2 text-sm font-semibold uppercase tracking-wide text-white/70">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ===================== CREATIVE: dream bedroom / 0% financing ===================== -->
+    <CreativeBanner src={creatives.dream.src} alt={creatives.dream.alt} bg="bg-brand-dark" />
+
+    <!-- ===================== PRIMARY LEAD FORM ===================== -->
+    <section id="lead-form" class="bg-gradient-to-br from-brand-dark to-brand">
+      <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
+        <div class="overflow-hidden rounded-2xl border-t-4 border-pop shadow-2xl">
+          <LeadForm
+            slug={SLUG}
+            heading="Get your free vinyl plank estimate"
+            submitLabel="Get My Free Estimate"
+            projectLabel="Vinyl you're considering"
+            projectName="vinyl_type"
+            projectOptions={projectOptions}
+            privacyNote={privacyNote}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FREE IN-HOME ESTIMATE (showroom-to-your-door) ===================== -->
+    <section class="relative isolate overflow-hidden bg-gradient-to-br from-cta to-cta-dark text-white">
+      <span class="pointer-events-none absolute -left-24 -top-24 -z-10 h-72 w-72 rounded-full bg-gold/25 blur-3xl" aria-hidden="true"></span>
+      <span class="pointer-events-none absolute -bottom-28 -right-20 -z-10 h-80 w-80 rounded-full bg-pop/30 blur-3xl" aria-hidden="true"></span>
+
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div data-reveal class="text-center">
+          <span class="inline-flex items-center gap-2 rounded-full bg-pop px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide text-brand-dark shadow-lg">
+            <span aria-hidden="true">🚚</span> No showroom trip required
+          </span>
+          <h2 class="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+            We bring the showroom <span class="text-gold">to your door</span>
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-white/90 sm:text-2xl">
+            {offer}. We show up with real luxury vinyl plank samples, measure your space, and hand
+            you a clear written price, right there in your living room.
+          </p>
+        </div>
+
+        <ol class="mt-12 grid gap-5 sm:grid-cols-3">
+          {[
+            { n: "1", icon: "🚪", title: "We come to you", body: "Pick a time that works. Our licensed crew arrives with LVP samples in hand, no driving to a store." },
+            { n: "2", icon: "💧", title: "Match it in your light", body: "Lay real waterproof wood-look and stone-look planks against your walls and daylight before you commit." },
+            { n: "3", icon: "📝", title: "Written price on the spot", body: "Exact measurements, layout advice, and an all-in quote with zero surprises." },
+          ].map((s, i) => (
+            <li
+              data-reveal
+              data-reveal-delay={i + 1}
+              tabindex="0"
+              class={`group relative flex flex-col overflow-hidden rounded-2xl bg-white/10 p-7 text-left ring-1 ring-white/15 backdrop-blur focus:outline-none focus-visible:ring-2 focus-visible:ring-pop ${cardLift} hover:bg-white/15`}
+            >
+              <span class="absolute right-5 top-4 text-6xl font-extrabold leading-none text-white/40 transition-colors duration-300 group-hover:text-white/70" aria-hidden="true">{s.n}</span>
+              <span class="text-4xl" aria-hidden="true">{s.icon}</span>
+              <span class="mt-4 text-2xl font-extrabold text-white sm:text-3xl">{s.title}</span>
+              <span class="mt-2 text-lg leading-relaxed text-white/85 sm:text-xl">{s.body}</span>
+              <span class="mt-5 block h-1 w-12 origin-left rounded bg-pop transition-all duration-300 group-hover:w-full group-focus-visible:w-full"></span>
+            </li>
+          ))}
+        </ol>
+
+        <div data-reveal class="mt-12 flex items-center justify-center gap-6">
+          <img
+            src="/logos/estimate-seal.png"
+            alt="Zona Floors free in-home estimate seal, no pressure, no obligation"
+            width="220" height="220" loading="lazy" decoding="async"
+            class="h-24 w-24 drop-shadow-2xl sm:h-32 sm:w-32"
+          />
+          <img
+            src="/logos/veteran-seal.png"
+            alt="Proud to give veterans, active military, seniors & first responders 10% off"
+            width="150" height="150" loading="lazy" decoding="async"
+            class="h-20 w-20 drop-shadow-2xl sm:h-28 sm:w-28"
+          />
+        </div>
+
+        <div data-reveal class="mt-10 flex flex-col items-center">
+          <a href="#lead-form"
+             class={`zf-sheen inline-flex items-center gap-2 rounded-lg bg-pop px-8 py-4 text-lg font-extrabold uppercase tracking-wide text-brand-dark shadow-xl sm:text-xl ${btnLift}`}>
+            Book My Free Estimate <span aria-hidden="true">→</span>
+          </a>
+          <p class="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-base text-white/90">
+            <span class="inline-flex items-center gap-1.5"><span class="text-gold" aria-hidden="true">★★★★★</span> 5-Star rated</span>
+            <span class="text-white/40" aria-hidden="true">·</span>
+            <span>Takes about a minute</span>
+            <span class="text-white/40" aria-hidden="true">·</span>
+            <span>No obligation</span>
+          </p>
+          <p class="mt-3 text-lg text-white/90">
+            Prefer to talk?
+            <a href={telHref(phones.primary)} data-track-call class="font-extrabold text-gold underline underline-offset-2 hover:text-white">Call {phone}</a>
+            or
+            <a href={smsHref(phones.primary)} data-track-sms class="font-extrabold text-gold underline underline-offset-2 hover:text-white">text us</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GUARANTEES ===================== -->
+    <Guarantees
+      heading="We put our money where your floor is"
+      subhead="Every Zona Floors vinyl plank install comes with these guarantees, in writing. No surprises, no games."
+    />
+
+    <!-- ===================== CREATIVE: gives back / discounts ===================== -->
+    <CreativeBanner src={creatives.giveback.src} alt={creatives.giveback.alt} bg="bg-brand/5" />
+
+    <!-- ===================== VINYL FEATURES (icon grid) ===================== -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Why Arizona homes love luxury vinyl plank</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
+            Tough, waterproof, and warm underfoot, set on a subfloor we prep right the first time.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {vinylFeatures.map((f, i) => (
+            <div
+              data-reveal
+              data-reveal-delay={(i % 3) + 1}
+              class={`group relative overflow-hidden rounded-2xl border-2 border-brand/10 bg-white p-6 shadow-sm ${cardLift} hover:border-pop/60`}
+            >
+              <span class="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-pop to-cta transition-transform duration-300 group-hover:scale-x-100"></span>
+              <span class={`flex h-14 w-14 items-center justify-center rounded-xl ${f.tone} text-white shadow-md transition-transform duration-300 group-hover:scale-110`}>
+                {f.icon === "droplet" && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 3s6 6.5 6 11a6 6 0 11-12 0c0-4.5 6-11 6-11z" stroke-linejoin="round"/>
+                  </svg>
+                )}
+                {f.icon === "shield" && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke-linejoin="round"/>
+                    <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                )}
+                {f.icon === "level" && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="2" y="9" width="20" height="6" rx="1"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/>
+                    <path d="M7 9v6M17 9v6" stroke-linecap="round"/>
+                  </svg>
+                )}
+                {f.icon === "comfort" && (
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M4 14c2-3 4-3 6 0s4 3 6 0 3-3 4-2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 18c2-3 4-3 6 0s4 3 6 0 3-3 4-2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                )}
+              </span>
+              <h3 class="mt-5 text-xl font-extrabold text-brand sm:text-2xl">{f.title}</h3>
+              <p class="mt-2 text-lg leading-relaxed text-brand/70 sm:text-xl">{f.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BUILT FOR REAL LIFE (pet + toddler) ===================== -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-brand-dark to-brand text-white">
+      <div class="plank-lines pointer-events-none absolute inset-0 opacity-25" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div data-reveal class="mx-auto max-w-2xl text-center">
+          <span class="text-sm font-extrabold uppercase tracking-[0.2em] text-pop">Built for real life</span>
+          <h2 class="mt-3 text-3xl font-extrabold sm:text-4xl">Waterproof floors that survive the whole family</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-4 text-xl text-white/85 sm:text-2xl">Muddy paws, juice spills, crayons, and toy trucks. Luxury vinyl plank shrugs it all off.</p>
+        </div>
+
+        <div class="mt-12 grid gap-6 sm:grid-cols-2">
+          {[
+            { src: img.pet, badge: "🐾 Pet-proof", alt: "A puppy napping on durable grey wood-look luxury vinyl plank in a Zona Floors living room", label: "Scratch-resistant under muddy paws and claws" },
+            { src: img.toddler, badge: "🧸 Toddler-proof", alt: "A toddler's crayons, drawings and toys on waterproof luxury vinyl plank by Zona Floors", label: "Waterproof through spills, snacks and art projects" },
+          ].map((c, i) => (
+            <figure data-reveal data-reveal-delay={i + 1} class="group relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={c.src}
+                alt={c.alt}
+                width="1200" height="1538" loading="lazy" decoding="async"
+                class="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <span class="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-pop px-3.5 py-1.5 text-sm font-extrabold uppercase tracking-wide text-brand-dark shadow-lg ring-2 ring-brand-dark/20">
+                {c.badge}
+              </span>
+              <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/90 to-transparent p-6 pt-16 text-left">
+                <span class="text-lg font-extrabold sm:text-xl">{c.label}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LVP-LOOK SELECTOR ===================== -->
+    <section class="bg-white">
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Pick your perfect plank 💧</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-xl text-xl text-brand/70 sm:text-2xl">
+            Tap a look you love and we'll start your quote with it.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {looks.map((s, i) => (
+            <button
+              type="button"
+              data-species={s.name}
+              data-reveal
+              data-reveal-delay={i + 1}
+              class={`group flex flex-col overflow-hidden rounded-2xl border-2 border-brand/10 bg-white text-left hover:border-pop ${cardLift} ${btnLift}`}
+            >
+              <span class="relative block aspect-[4/3] overflow-hidden">
+                <img
+                  src={s.img}
+                  alt={`${s.name} luxury vinyl plank floor installed by Zona Floors`}
+                  width="440"
+                  height="330"
+                  loading="lazy"
+                  decoding="async"
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <span class="pointer-events-none absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-brand-dark/80 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white ring-1 ring-white/20">
+                  <span aria-hidden="true">🏠</span> Real Zona project
+                </span>
+              </span>
+              <span class="flex grow flex-col p-6">
+                <span class="text-2xl font-extrabold text-brand sm:text-3xl">{s.name}</span>
+                <span class="mt-1 text-lg text-brand/70 sm:text-xl">{s.note}</span>
+                <span class="mt-4 text-lg font-bold text-cta sm:text-xl">
+                  Start with {s.name}
+                  <span class="inline-block transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true"> →</span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <p class="mx-auto mt-8 max-w-2xl text-center text-xl text-brand/70 sm:text-2xl">
+          Can't decide? That's exactly what we're here for. We'll help you choose during your free in-home estimate.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== CREATIVE: senior discounts ===================== -->
+    <CreativeBanner src={creatives.senior.src} alt={creatives.senior.alt} bg="bg-brand-dark" />
+
+    <!-- ===================== SPLIT FEATURE (asymmetric) ===================== -->
+    <section class="overflow-hidden bg-gradient-to-b from-brand/5 to-white">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal class="relative">
+          <div class="zf-glow overflow-hidden rounded-2xl ring-1 ring-brand/10">
+            <img
+              src={img.greatRoom}
+              alt="Great room with bookshelves and warm greige wood-look luxury vinyl plank by Zona Floors"
+              width="1300"
+              height="1734"
+              loading="lazy"
+              decoding="async"
+              class="w-full object-cover"
+            />
+          </div>
+          <span class="absolute -bottom-4 -right-3 rotate-3 rounded-lg bg-pop px-4 py-2 text-base font-extrabold uppercase tracking-wide text-brand-dark shadow-xl ring-2 ring-white">
+            Licensed &amp; local
+          </span>
+        </div>
+        <div data-reveal data-reveal-delay="1">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">A local crew you can actually hold accountable</h2>
+          <span class="mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <ul class="mt-7 space-y-4 text-lg text-brand/80 sm:text-xl">
+            {[
+              `Licensed Arizona contractor (${business.license.number}), never a big-box middleman.`,
+              "Our own installers on every job. No day-labor subs.",
+              "Subfloors moisture-tested and leveled before a single plank is set.",
+              "The price we quote is the price you pay. No surprises.",
+            ].map((point) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pop text-brand-dark">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="#lead-form" class={`zf-sheen mt-8 inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FINISHED LOOK (wide furnished feature) ===================== -->
+    <section class="overflow-hidden bg-white">
+      <div class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div data-reveal class="mx-auto max-w-2xl text-center">
+          <span class="text-sm font-extrabold uppercase tracking-[0.2em] text-cta">The finished look</span>
+          <h2 class="mt-3 text-3xl font-extrabold text-brand sm:text-4xl">Vinyl plank that flows room to room</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-4 text-xl text-brand/70 sm:text-2xl">Seamless, waterproof planks that run wall to wall, with crisp, level transitions.</p>
+        </div>
+
+        <figure data-reveal class="group relative mt-12 overflow-hidden rounded-3xl shadow-2xl ring-1 ring-black/10">
+          <img
+            src={img.hall}
+            alt="Low-angle view of seamless grey wood-look luxury vinyl plank running down a hallway by Zona Floors"
+            width="1600" height="873" loading="lazy" decoding="async"
+            class="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105 sm:aspect-[16/9]"
+          />
+          <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/85 to-transparent p-6 pt-16 text-left">
+            <span class="text-lg font-extrabold text-white sm:text-2xl">Seamless grey wood-look LVP · wall to wall</span>
+          </figcaption>
+        </figure>
+
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get this look, free estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BEFORE / AFTER (real carpet -> LVP) ===================== -->
+    <section class="bg-gradient-to-b from-brand/5 to-white">
+      <div class="mx-auto max-w-4xl px-5 py-16 sm:py-24">
+        <div data-reveal class="text-center">
+          <span class="text-sm font-extrabold uppercase tracking-[0.2em] text-cta">Before &amp; after</span>
+          <h2 class="mt-3 text-3xl font-extrabold text-brand sm:text-4xl">Same room. Whole new floor.</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-4 text-xl text-brand/70 sm:text-2xl">Drag to watch tired old carpet become waterproof vinyl plank.</p>
+        </div>
+        <div data-reveal class="mt-10">
+          <BeforeAfter
+            before={beforeAfter.before}
+            after={beforeAfter.after}
+            alt="Zona Floors vinyl plank transformation, old carpet to a furnished LVP bedroom"
+            ratioClass="aspect-square"
+            showLabels={false}
+          />
+        </div>
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Ditch the carpet, free estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TEAM AT WORK (LVP crew) ===================== -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-brand to-brand-dark text-white">
+      <div class="plank-lines pointer-events-none absolute inset-0 opacity-25" aria-hidden="true"></div>
+      <div class="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal class="relative">
+          <div class="zf-glow overflow-hidden rounded-3xl ring-1 ring-white/10">
+            <img
+              src={img.team}
+              alt="A Zona Floors team installer in branded gear click-locking a luxury vinyl plank on a Valley job"
+              width="1200" height="1538" loading="lazy" decoding="async"
+              class="w-full object-cover"
+            />
+          </div>
+          <span class="absolute -bottom-4 -left-3 -rotate-3 rounded-lg bg-pop px-4 py-2 text-base font-extrabold uppercase tracking-wide text-brand-dark shadow-xl ring-2 ring-brand-dark">
+            Our own crew
+          </span>
+        </div>
+        <div data-reveal data-reveal-delay="1">
+          <h2 class="text-4xl font-extrabold leading-[1.05] sm:text-5xl">The crew behind your floor</h2>
+          <span class="mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mt-6 text-xl text-white/85 sm:text-2xl">
+            Our own installers on every job across the Valley, no day-labor subs. We moisture-test
+            and level the subfloor first, then lay tight, staggered planks and clean up like we were
+            never there.
+          </p>
+          <ul class="mt-7 space-y-3 text-lg text-white/90 sm:text-xl">
+            {["Licensed Arizona contractor, never a big-box middleman", "Subfloor moisture-tested and leveled before any plank goes down", "Most projects finished in just 3 to 7 days"].map((p) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pop text-brand-dark">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="#lead-form" class={`zf-sheen mt-8 inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CREATIVE: new floors in 3 days ===================== -->
+    <CreativeBanner src={creatives.speed3.src} alt={creatives.speed3.alt} bg="bg-brand-dark" />
+
+    <!-- ===================== SOCIAL PROOF ===================== -->
+    <section class="bg-brand/5">
+      <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">The flooring company Phoenix keeps recommending ⭐</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <div class="mx-auto mt-5 inline-flex items-center gap-2 rounded-full bg-pop px-5 py-2 text-lg font-extrabold text-brand-dark shadow-md ring-1 ring-black/10">
+            <span aria-hidden="true">★★★★★</span>
+            4.9 · 103+ Google reviews
+          </div>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
+            Real homeowners from Tempe to Scottsdale, 5-star rated and reviewed on Google, Yelp, Angi, BBB &amp; Nextdoor.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {proof.map((p, i) => {
+            const initials = p.name.split(" ").map((w) => w[0]).join("").slice(0, 2);
+            const avatarTone = ["from-brand to-brand-dark", "from-pop to-cta", "from-gold to-pop", "from-brand-dark to-brand"][i % 4];
+            return (
+              <figure
+                data-reveal
+                data-reveal-delay={(i % 3) + 1}
+                class={`group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-brand/10 bg-white p-6 shadow-sm ${cardLift} hover:border-pop/60`}
+              >
+                <span class="absolute inset-x-0 top-0 h-1.5 origin-left scale-x-0 bg-gradient-to-r from-gold via-pop to-gold transition-transform duration-300 group-hover:scale-x-100"></span>
+                <div class="flex items-center gap-3">
+                  <span class={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${avatarTone} text-lg font-extrabold uppercase text-white shadow-md ring-2 ring-white`}>
+                    {initials}
+                  </span>
+                  <div class="min-w-0">
+                    <figcaption class="truncate text-lg font-extrabold text-brand">{p.name}</figcaption>
+                    <div class="text-base leading-none text-gold" aria-hidden="true">★★★★★</div>
+                  </div>
+                  <img src="/logos/google.svg" alt="" width="24" height="24" class="ml-auto h-6 w-6 shrink-0" />
+                </div>
+                <span class="sr-only">{p.name} rated Zona Floors 5 out of 5 stars on Google</span>
+                <p class="mt-4 grow text-lg leading-relaxed text-ink sm:text-xl">{p.note}</p>
+                <p class="mt-4 flex items-center gap-1.5 text-sm font-semibold text-brand/55">
+                  <svg class="h-4 w-4 text-pop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Google review
+                </p>
+              </figure>
+            );
+          })}
+        </div>
+
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form"
+             class={`inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Get My Free Estimate →
+          </a>
+          <p class="mt-3 text-sm text-brand/70">{ctaMicrocopy}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROCESS ===================== -->
+    <ProcessSteps heading="Your new vinyl floor in three easy steps" steps={steps} />
+
+    <!-- ===================== FAQ (objection handling → leads) ===================== -->
+    <section class="relative bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto max-w-3xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Vinyl questions? Answered.</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-xl text-xl text-brand/70 sm:text-2xl">
+            The stuff Valley homeowners ask us most, before they book.
+          </p>
+        </div>
+
+        <div class="mt-10 space-y-4">
+          {faqs.map((f, i) => (
+            <details
+              data-reveal
+              data-reveal-delay={(i % 3) + 1}
+              class="group rounded-2xl border-2 border-brand/10 bg-white p-5 shadow-sm transition-colors open:border-pop/50 sm:p-6"
+            >
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-extrabold text-brand [&::-webkit-details-marker]:hidden sm:text-xl">
+                {f.q}
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pop/15 text-xl font-black text-cta transition-transform duration-300 group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="mt-3 text-lg leading-relaxed text-brand/75 sm:text-xl">{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div data-reveal class="mt-10 text-center">
+          <a href="#lead-form" class={`zf-sheen inline-block rounded-lg bg-pop px-7 py-4 text-lg font-extrabold text-brand-dark shadow-lg sm:text-xl ${btnLift}`}>
+            Still have questions? Get a free estimate →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FINAL FORM ===================== -->
+    <section class="bg-gradient-to-br from-brand-dark via-brand-dark to-brand text-white">
+      <div data-reveal class="mx-auto max-w-lg px-5 py-14 sm:py-20">
+        <h2 class="text-center text-3xl font-extrabold sm:text-4xl">Ready for floors that laugh at spills?</h2>
+        <p class="mt-3 text-center text-xl text-white/85 sm:text-2xl">{offer}</p>
+        <div class="mt-7 overflow-hidden rounded-2xl border-t-4 border-pop shadow-2xl">
+          <LeadForm slug={SLUG} submitLabel="Get My Free Estimate" projectLabel="Vinyl you're considering" projectName="vinyl_type" projectOptions={projectOptions} privacyNote={privacyNote} />
+        </div>
+        <p class="mt-5 text-center text-xl">
+          Prefer to talk?
+          <a href={telHref(phones.primary)} data-track-call class="font-extrabold text-gold underline underline-offset-2 hover:text-gold/80">Call {phone}</a>
+          or
+          <a href={smsHref(phones.primary)} data-track-sms class="font-extrabold text-gold underline underline-offset-2 hover:text-gold/80">text us</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== CREATIVE: sick of carpet (closer) ===================== -->
+    <CreativeBanner src={creatives.carpet.src} alt={creatives.carpet.alt} bg="bg-brand/5" />
+
+    <!-- ===================== SERVICE AREA ===================== -->
+    <section class="bg-gradient-to-b from-white to-brand/5">
+      <div class="mx-auto max-w-5xl px-5 py-14 sm:py-20">
+        <div data-reveal class="text-center">
+          <h2 class="text-3xl font-extrabold text-brand sm:text-4xl">Where we install across the Valley</h2>
+          <span class="mx-auto mt-4 block h-1 w-20 rounded bg-gold"></span>
+          <p class="mx-auto mt-4 max-w-2xl text-xl text-brand/70 sm:text-2xl">
+            Proudly serving homeowners throughout {business.address.city} and the greater Phoenix metro and East Valley.
+          </p>
+        </div>
+
+        <ul data-reveal class="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-3">
+          {serviceArea.map((city) => (
+            <li class="flex items-center gap-2 rounded-full border-2 border-brand/10 bg-white px-5 py-2.5 text-lg font-bold text-brand shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-pop hover:shadow-md sm:text-xl">
+              <svg class="h-5 w-5 shrink-0 text-cta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 21s-7-5.5-7-11a7 7 0 1114 0c0 5.5-7 11-7 11z" stroke-linejoin="round"/>
+                <circle cx="12" cy="10" r="2.5"/>
+              </svg>
+              {city}
+            </li>
+          ))}
+        </ul>
+
+        <p data-reveal class="mx-auto mt-8 max-w-2xl text-center text-lg text-brand/60">
+          Don't see your city? Give us a call and we'll let you know if we cover it.
+        </p>
+      </div>
+    </section>
+
+    <!-- A/B heading variant data (read by the page script for ?v= selection). -->
+    <script type="application/json" id="hero-variants" set:html={JSON.stringify(headingVariants)}></script>
+  </main>
+
+  <Footer />
+  <StickyMobileBar />
+</Layout>
+
+<script>
+  import { trackConversion } from "@/lib/tracking";
+  import { initReveal } from "@/lib/reveal";
+
+  // Scroll-reveal (no-op under prefers-reduced-motion).
+  initReveal();
+
+  // ---- A/B heading variant (?v=a|b|c) ----
+  // Control (A) is server-rendered; B/C swap in here. The active variant is
+  // posted with every lead and tagged to Clarity so wins are attributable.
+  (function heroVariant() {
+    const requested = (new URLSearchParams(location.search).get("v") || "a").toLowerCase();
+    let variants: Record<string, { pre: string; accent: string; post: string; sub: string }> = {};
+    try { variants = JSON.parse(document.getElementById("hero-variants")?.textContent || "{}"); } catch { /* keep control */ }
+    const variant = variants[requested] ? requested : "a";
+
+    if (variant !== "a") {
+      const v = variants[variant];
+      const set = (sel: string, text: string) => { const el = document.querySelector<HTMLElement>(sel); if (el) el.textContent = text; };
+      set("[data-h1-pre]", v.pre);
+      set("[data-h1-accent]", v.accent);
+      set("[data-h1-post]", v.post);
+      set("[data-hero-sub]", v.sub);
+    }
+    document.documentElement.dataset.heroVariant = variant;
+
+    // Attribute the variant to every lead.
+    document.querySelectorAll<HTMLFormElement>("[data-lead-form]").forEach((form) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "heading_variant";
+      input.value = variant;
+      form.appendChild(input);
+    });
+
+    // Tag analytics (Clarity) if present.
+    (window as unknown as { clarity?: (...a: unknown[]) => void }).clarity?.("set", "heading_variant", variant);
+  })();
+
+  // ---- Stats count-up on scroll (skips ranges like "3-7"; respects reduced motion) ----
+  (function countUp() {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const isNum = (s: string) => /^\d+(\.\d+)?$/.test(s);
+    const counters = Array.from(document.querySelectorAll<HTMLElement>("[data-countup]"))
+      .filter((el) => isNum(el.dataset.countup || ""));
+    if (reduce || typeof IntersectionObserver === "undefined" || counters.length === 0) return;
+
+    const run = (el: HTMLElement) => {
+      const target = el.dataset.countup || "";
+      const to = parseFloat(target);
+      const decimals = (target.split(".")[1] || "").length;
+      const dur = 1100;
+      let startTs = 0;
+      const tick = (now: number) => {
+        if (!startTs) startTs = now;
+        const p = Math.min(1, (now - startTs) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = (to * eased).toFixed(decimals);
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const io = new IntersectionObserver((entries, obs) => {
+      for (const e of entries) {
+        if (e.isIntersecting) { run(e.target as HTMLElement); obs.unobserve(e.target); }
+      }
+    }, { threshold: 0.4 });
+    counters.forEach((c) => { c.textContent = "0"; io.observe(c); });
+  })();
+
+  // tel: / sms: conversion tracking.
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-call]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("call")));
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-sms]").forEach((el) =>
+    el.addEventListener("click", () => trackConversion("sms")));
+
+  // LVP-look selector → pre-select the lead form's dropdown, then jump to it.
+  const select = document.querySelector<HTMLSelectElement>("[data-project-select]");
+  document.querySelectorAll<HTMLButtonElement>("[data-species]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const value = btn.dataset.species ?? "";
+      if (select && value) {
+        if (!Array.from(select.options).some((o) => o.value === value)) {
+          select.add(new Option(value, value));
+        }
+        select.value = value;
+      }
+      document.getElementById("lead-form")?.scrollIntoView({ behavior: "smooth" });
+    }));
+</script>
