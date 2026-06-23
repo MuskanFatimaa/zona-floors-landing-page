@@ -9,6 +9,10 @@
    Manrope body, distinct from the wood page's Fraunces/DM Sans. */
 @import "@fontsource-variable/bricolage-grotesque/index.css";
 @import "@fontsource-variable/manrope/index.css";
+/* Vinyl page identity (see .vinyl-theme below): Sora display + Plus Jakarta Sans
+   body, distinct from both the wood serif and the tile Bricolage. */
+@import "@fontsource-variable/sora/index.css";
+@import "@fontsource-variable/plus-jakarta-sans/index.css";
 
 /*
  * Brand theme, derived from the Zona Floors logo (Arizona state-flag identity:
@@ -210,4 +214,91 @@ h3 {
     transparent 270deg
   );
   background-size: 26px 26px;
+}
+
+/*
+ * VINYL PAGE THEME, scoped to .vinyl-theme (the /vinyl-plank-flooring <main>) so
+ * the wood + tile pages are untouched. A third, deliberately distinct identity:
+ *   - Sora headings + Plus Jakarta Sans body (vs wood serif / tile Bricolage).
+ *   - Electric-blue NEON on slate/charcoal (waterproof, engineered, modern), with
+ *     plank-seam motifs + a pulsing neon glow (vinyl = planks, not tile grid).
+ *   - Neon (--color-pop) is bright; on LIGHT backgrounds use --color-cta for accent
+ *     text (contrast), and reserve the neon for fills + glowing text on dark.
+ * Scoped overrides win on specificity (.vinyl-theme .x = 0,2,0 > .x = 0,1,0).
+ */
+.vinyl-theme {
+  --color-pop: #2f8bff;         /* electric-blue neon, offers / CTAs / eye-catch */
+  --color-cta: #1f6fe0;         /* deeper electric blue, large fills + accent text on light */
+  --color-cta-dark: #1857b8;
+  --color-brand: #1f3147;       /* slate, structure / headings on light */
+  --color-brand-dark: #0b1320;  /* near-black slate, dark sections */
+  font-family: "Plus Jakarta Sans Variable", var(--font-sans);
+}
+.vinyl-theme h1,
+.vinyl-theme h2,
+.vinyl-theme h3 {
+  font-family: "Sora Variable", "Plus Jakarta Sans Variable", sans-serif;
+  letter-spacing: -0.025em;
+}
+
+/* Flat gold underline accents -> gold→electric-blue gradient, a touch bolder. */
+.vinyl-theme .h-1.bg-gold {
+  height: 0.375rem;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-pop));
+}
+
+/* ---- Plank motif (vinyl page only) ---- */
+/* Horizontal "plank seam" texture for section backgrounds (distinct from the tile
+   grout grid). Faint repeating planks; the lighter version reads on dark slate. */
+.vinyl-theme .plank-lines {
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 38px,
+    color-mix(in srgb, var(--color-pop) 22%, transparent) 38px,
+    color-mix(in srgb, var(--color-pop) 22%, transparent) 39px,
+    transparent 39px,
+    transparent 78px
+  );
+}
+/* A bright neon plank bar used as a section divider / accent rule. */
+.vinyl-theme .plank-bar {
+  background: linear-gradient(90deg, transparent, var(--color-pop), transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-pop) 70%, transparent);
+}
+
+/* Static neon glow (also the reduced-motion fallback for .zf-glow). */
+.vinyl-theme .zf-glow {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-pop) 50%, transparent),
+    0 0 22px color-mix(in srgb, var(--color-pop) 45%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Pulsing electric-blue neon glow on offer / CTA elements (vinyl page). */
+  @keyframes zfGlow {
+    0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-pop) 40%, transparent), 0 0 16px color-mix(in srgb, var(--color-pop) 35%, transparent); }
+    50%      { box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-pop) 65%, transparent), 0 0 34px color-mix(in srgb, var(--color-pop) 65%, transparent); }
+  }
+  .vinyl-theme .zf-glow { animation: zfGlow 2.8s ease-in-out infinite; }
+
+  /* Scrolling marquee ticker for the top offer ribbon. The track holds two copies
+     of the content; translating by -50% loops seamlessly. */
+  @keyframes zfMarquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .vinyl-theme .zf-marquee {
+    display: flex;
+    width: max-content;
+    animation: zfMarquee 30s linear infinite;
+  }
+  .vinyl-theme .zf-marquee-wrap:hover .zf-marquee { animation-play-state: paused; }
+
+  /* Gentle floating bob for the hero "100% Waterproof" badge. */
+  @keyframes zfBob {
+    0%, 100% { transform: rotate(-2deg) translateY(0); }
+    50%      { transform: rotate(-2deg) translateY(-6px); }
+  }
+  .vinyl-theme .zf-bob { animation: zfBob 3.2s ease-in-out infinite; }
 }
